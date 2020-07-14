@@ -47,6 +47,10 @@ client.on('message', async (message) => {
     return setVolume(message, serverQueue);
   }
 
+  if (message.content.startsWith(`${prefix} queue`)) {
+    return printQueue(message, serverQueue);
+  }
+
   return message.channel.send("Don't talk to me about life!");
 });
 
@@ -116,6 +120,7 @@ function setVolume(message, serverQueue) {
 
   const dispatcher = serverQueue.connection.dispatcher.setVolumeLogarithmic(volume / 5);
 
+  
   return message.channel.send('Yeah I will change the volume, it is not like you care if I can listen to it!');
 }
 
@@ -154,8 +159,23 @@ function skip(message, serverQueue) {
   };
 
   if(!serverQueue) {
-    return message.channel.send('There is not any song for me to skip, it is all silence and horror like to void of space');
+    return message.channel.send('There is not any song for me to skip, it is all silence and horror like the void of space');
   };
 
   serverQueue.connection.dispatcher.end();
+}
+
+function printQueue(message, serverQueue) {
+  if (!message.member.voice.channel) {
+    return message.channel.send('There is no queue, how dissapointing. I\'m not in a voice channel');
+  };
+
+  if(!serverQueue) {
+    return message.channel.send('The queue is empty, it is all silence and horror like the void of space')
+  }
+
+  let queueMessage = 'Here are the songs \n';
+  serverQueue.songs.forEach((song) => queueMessage += `- ${song.title}\n`)
+
+  return message.channel.send(queueMessage);
 }
