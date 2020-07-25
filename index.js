@@ -7,7 +7,6 @@ const {
 
 const ytdl = require('ytdl-core');
 
-
 const client = new Discord.Client();
 const queue = new Map();
 
@@ -54,7 +53,12 @@ client.on('message', async (message) => {
   return message.channel.send("Don't talk to me about life!");
 });
 
-
+client.on('voiceStateUpdate', async(oldState, newState) => {
+  const { guild } = newState;
+  if (guild.memberCount === 0) {
+    guild.leave();
+  };
+});
 
 async function execute(message, serverQueue) {
   const args = message.content.split(" ");
@@ -78,7 +82,7 @@ async function execute(message, serverQueue) {
       voiceChannel: voiceChannel,
       connection: undefined,
       songs: [],
-      volume: 5,
+      volume: 50,
       playing: true,
     };
 
@@ -117,10 +121,9 @@ function setVolume(message, serverQueue) {
   }
 
   const volume = args[2];
+  serverQueue.volume = volume;
+  serverQueue.connection.dispatcher.setVolume(volume);
 
-  const dispatcher = serverQueue.connection.dispatcher.setVolumeLogarithmic(volume / 5);
-
-  
   return message.channel.send('Yeah I will change the volume, it is not like you care if I can listen to it!');
 }
 
@@ -140,7 +143,7 @@ function play(guild, song) {
                                   play(guild, serverQueue.songs[0])
                                 });
 
-  dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
+  dispatcher.setVolume(serverQueue.volume);
   serverQueue.textChannel.send(`*Sigh*, I'm playing **${song.title}**`);
 }
 
