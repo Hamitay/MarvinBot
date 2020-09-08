@@ -8,6 +8,12 @@ As of today he can play songs from youtube and also play songs from the filesyst
 
 ## Running Marvin
 
+The easiest way of running Marvin would be via Docker:
+
+```
+$ docker run -e DISCORD_TOKEN=<discord_token> henriqueamitay/marvin:latest
+```
+
 ## Deploying Marvin
 
 
