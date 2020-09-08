@@ -8,6 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
+    - name: Set token
+      run: echo '::set-env name=DISCORD_TOKEN::$ {{ secrets.DISCORD_TOKEN }}'
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
