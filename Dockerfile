@@ -9,4 +9,7 @@ RUN npm i
 
 COPY ./ ./
 
+ARG DISCORD_TOKEN
+ENV DISCORD_TOKEN=${DISCORD_TOKEN}
+
 CMD ["node", "index.js"]
