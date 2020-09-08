@@ -12,51 +12,69 @@ const shuffle = require('shuffle-array');
 const client = new Discord.Client();
 const queue = new Map();
 
+const messages = require('./messages');
+
+const commands = {
+  'help': {
+    function: printHelp,
+    description: 'Gives all the possible commands. But you probably already know this.'
+  },
+  'play': {
+    function: execute,
+    description: 'Plays a song from a youtube link.',
+  },
+  'stop': {
+    function: stop,
+    description: 'Stops the current song and destroys the queue.',
+  },
+  'skip': {
+    function: skip,
+    description: 'Skips the current song and plays the next one on the queue.',
+  },
+  'volume': {
+    function: setVolume,
+    description: 'Changes the volume of the stream.',
+  },
+  'queue': {
+    function: printQueue,
+    description: 'Prints the current queue',
+  },
+  'playlist': {
+    function: playlist,
+    description: 'Sets the queue to one of the premades playlists'
+  },
+};
+
 client.login(token);
 
 client.once('ready', () => {
-  console.log('Don\'t talk to me about life');
+  console.log(messages.DEFAULT_MESSAGE);
 });
 
 client.once('reconnecting', () => {
-  console.log('Oh I failed, how marvelous');
+  console.log(messages.DEFAULT_FAILURE_MESSAGE);
 });
 
 client.once('disconnect', () => {
-  console.log('Farewell');
+  console.log(messages.DEFAULT_GOODBYE);
 });
 
 client.on('message', async (message) => {
   if(message.author.bot) return;
+
   if(!message.content.startsWith(prefix)) return;
 
   const serverQueue = queue.get(message.guild.id);
 
-  if (message.content.startsWith(`${prefix} play `)) {
-    return execute(message, serverQueue);
+  const args = message.content.split(" ");
+
+  const command = args[1];
+
+  if (command in commands) {
+    return commands[command].function(message, serverQueue);
   }
 
-  if (message.content.startsWith(`${prefix} stop`)) {
-    return stop(message, serverQueue);
-  }
-
-  if (message.content.startsWith(`${prefix} skip`)) {
-    return skip(message, serverQueue);
-  }
-
-  if (message.content.startsWith(`${prefix} volume`)) {
-    return setVolume(message, serverQueue);
-  }
-
-  if (message.content.startsWith(`${prefix} queue`)) {
-    return printQueue(message, serverQueue);
-  }
-
-  if (message.content.startsWith(`${prefix} playlist`)) {
-    return playlist(message, serverQueue);
-  }
-
-  return message.channel.send("Don't talk to me about life!");
+  return message.channel.send(messages.ASK_FOR_HELP_MESSAGE);
 });
 
 async function execute(message, serverQueue) {
@@ -65,10 +83,8 @@ async function execute(message, serverQueue) {
   const voiceChannel = message.member.voice.channel;
 
   if (!voiceChannel) {
-    return message.channel.send('How do you expect me to play anything? I\'m not in a voice channel');
+    return message.channel.send(messages.NOT_ON_VOICE_CHANNEL);
   }
-  //To do add voicechannel permissions management
-
   const songInfo = await ytdl.getInfo(args[2]);
   const song = {
     title: songInfo.title,
@@ -89,7 +105,6 @@ async function execute(message, serverQueue) {
     queue.set(message.guild.id, queueConstruct);
     queueConstruct.songs.push(song);
 
-
     try {
       const connection = await voiceChannel.join();
       queueConstruct.connection = connection;
@@ -99,15 +114,13 @@ async function execute(message, serverQueue) {
       console.error(err);
       queue.delete(message.guild.id);
 
-      return message.channel.send(`Unsurprisingly there has been an error: ${error}`);
+      return message.channel.send(messages.UNKNOWN_ERROR(error));
     }
 
   } else {
     serverQueue.songs.push(song);
-    console.log(`Server queue: ${serverQueue.songs}`);
-    return message.channel.send(`Do you really want me to play: ${song.title}, it is awful`);
+    return message.channel.send(messages.PLAYING_SONG(song.title));
   }
-
 }
 
 function setVolume(message, serverQueue) {
@@ -116,7 +129,7 @@ function setVolume(message, serverQueue) {
   const voiceChannel = message.member.voice.channel;
 
   if (!voiceChannel) {
-    return message.channel.send('How do you expect me to play anything? I\'m not in a voice channel');
+    return message.channel.send(messages.NOT_ON_VOICE_CHANNEL);
   }
 
   let volume = args[2];
@@ -131,7 +144,7 @@ function setVolume(message, serverQueue) {
   }
 
   serverQueue.volume = volume;
-  return message.channel.send('Yeah I will change the volume, it is not like you care if I can listen to it!');
+  return message.channel.send(messages.CHANGE_VOLUME);
 }
 
 async function playlist(message, serverQueue) {
@@ -141,13 +154,13 @@ async function playlist(message, serverQueue) {
   const voiceChannel = message.member.voice.channel;
 
   if (!voiceChannel) {
-    return message.channel.send('How do you expect me to play anything? I\'m not in a voice channel');
+    return message.channel.send(messages.NOT_ON_VOICE_CHANNEL);
   }
 
   const dir = fs.readdir(`./playlists/${playlist}`, async (err, files) => {
     if (err) {
       // Handle error
-      return message.channel.send('I believe this is a non-existant playlist')
+      return message.channel.send(messages.UNKNOWN_PLAYLIST)
     }
 
     const songs = shuffle(
@@ -176,7 +189,7 @@ async function playlist(message, serverQueue) {
       console.error(err);
       queue.delete(message.guild.id);
 
-      return message.channel.send(`Unsurprisingly there has been an error: ${error}`);
+      return message.channel.send(messages.UNKNOWN_ERROR(error));
     }
   });
 }
@@ -225,16 +238,16 @@ function play(guild, song) {
 
 function stop(message, serverQueue) {
   if (!message.member.voice.channel) {
-    return message.channel.send('How do you expect me to play anything? I\'m not in a voice channel');
+    return message.channel.send(messages.NOT_ON_VOICE_CHANNEL);
   };
 
   serverQueue.songs = [];
   serverQueue.connection.dispatcher.end();
 }
 
-function skip(message, serverQueue) {
+function skip(message, servplay_youtubeerQueue) {
   if (!message.member.voice.channel) {
-    return message.channel.send('How do you expect me to play anything? I\'m not in a voice channel');
+    return message.channel.send(messages.NOT_ON_VOICE_CHANNEL);
   };
 
   if(!serverQueue) {
@@ -257,4 +270,12 @@ function printQueue(message, serverQueue) {
   serverQueue.songs.forEach((song) => queueMessage += `- ${song.title}\n`)
 
   return message.channel.send(queueMessage);
+}
+
+function printHelp(message, serverQueue) {
+  const helpCommands =
+    Object.entries(commands).map((command) => `-> **${command[0]}**: ${command[1].description} \n`).join('');
+
+  const helpMessage = messages.HELP_HEADER + helpCommands;
+  return message.channel.send(helpMessage);
 }
