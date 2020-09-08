@@ -6,6 +6,8 @@ const {
 } = require('./config.json');
 
 const ytdl = require('ytdl-core');
+const fs = require('fs');
+const shuffle = require('shuffle-array');
 
 const client = new Discord.Client();
 const queue = new Map();
@@ -30,7 +32,7 @@ client.on('message', async (message) => {
 
   const serverQueue = queue.get(message.guild.id);
 
-  if (message.content.startsWith(`${prefix} play`)) {
+  if (message.content.startsWith(`${prefix} play `)) {
     return execute(message, serverQueue);
   }
 
@@ -50,14 +52,11 @@ client.on('message', async (message) => {
     return printQueue(message, serverQueue);
   }
 
-  return message.channel.send("Don't talk to me about life!");
-});
+  if (message.content.startsWith(`${prefix} playlist`)) {
+    return playlist(message, serverQueue);
+  }
 
-client.on('voiceStateUpdate', async(oldState, newState) => {
-  const { guild } = newState;
-  if (guild.memberCount === 0) {
-    guild.leave();
-  };
+  return message.channel.send("Don't talk to me about life!");
 });
 
 async function execute(message, serverQueue) {
@@ -120,11 +119,88 @@ function setVolume(message, serverQueue) {
     return message.channel.send('How do you expect me to play anything? I\'m not in a voice channel');
   }
 
-  const volume = args[2];
-  serverQueue.volume = volume;
-  serverQueue.connection.dispatcher.setVolume(volume);
+  let volume = args[2];
 
+  const dispatcher = serverQueue.connection.dispatcher;
+
+  if (serverQueue.isBroadcast) {
+    volume = volume/100;
+    serverQueue.connection.dispatcher.broadcast.player.dispatcher.setVolume(volume);
+  } else {
+    serverQueue.connection.dispatcher.setVolume(volume);
+  }
+
+  serverQueue.volume = volume;
   return message.channel.send('Yeah I will change the volume, it is not like you care if I can listen to it!');
+}
+
+async function playlist(message, serverQueue) {
+
+  const playlist = message.content.split(" ")[2];
+
+  const voiceChannel = message.member.voice.channel;
+
+  if (!voiceChannel) {
+    return message.channel.send('How do you expect me to play anything? I\'m not in a voice channel');
+  }
+
+  const dir = fs.readdir(`./playlists/${playlist}`, async (err, files) => {
+    if (err) {
+      // Handle error
+      return message.channel.send('I believe this is a non-existant playlist')
+    }
+
+    const songs = shuffle(
+      files.map((file) => ({
+      title: file,
+      url: `./playlists/${playlist}/${file}`,
+    })));
+
+    const queueConstruct = {
+      textChannel: message.channel,
+      voiceChannel: voiceChannel,
+      connection: undefined,
+      songs,
+      volume: 1,
+      playing: true,
+    };
+
+    queue.set(message.guild.id, queueConstruct);
+
+    try {
+      const connection = await voiceChannel.join();
+      queueConstruct.connection = connection;
+
+      play_broadcast(message.guild, queueConstruct.songs[0]);
+    } catch (err) {
+      console.error(err);
+      queue.delete(message.guild.id);
+
+      return message.channel.send(`Unsurprisingly there has been an error: ${error}`);
+    }
+  });
+}
+
+
+function play_broadcast(guild, song) {
+  const serverQueue = queue.get(guild.id);
+
+  if (!song) {
+    serverQueue.voiceChannel.leave();
+    queue.delete(guild.id);
+    return;
+  }
+
+  const broadcast = client.voice.createBroadcast();
+  broadcast.play(song.url).on("finish", () => {
+    serverQueue.songs.shift();
+    play_broadcast(guild, serverQueue.songs[0]);
+  })
+  .setVolume(serverQueue.volume);
+
+  serverQueue.connection.play(broadcast).on("error", error => console.error(error));
+  serverQueue.textChannel.send(`*Sigh*, I'm playing **${song.title}**`);
+  serverQueue.isBroadcast = true;
 }
 
 function play(guild, song) {
