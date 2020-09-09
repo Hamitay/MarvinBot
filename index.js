@@ -22,11 +22,11 @@ const commands = {
   },
   'play': {
     function: execute,
-    description: 'Plays a song from a youtube link. \n\t I will stop any playlist if you ask me to play a youtube song.',
+    description: 'Plays a song from a youtube link or puts it at the bottom of the queue.',
   },
   'stop': {
     function: stop,
-    description: 'Stops the current song and destroys the queue.',
+    description: 'Stops the current song and clears the queue.',
   },
   'skip': {
     function: skip,
@@ -42,7 +42,7 @@ const commands = {
   },
   'playlist': {
     function: playlist,
-    description: 'Sets the queue to one of the premades playlists; \n\t I will stop any youtube song if you ask me to play a playlist.',
+    description: 'Sets the queue to one of the premades playlists; \n\t **This will clear the current queue**',
   },
   'menu': {
     function: printMenu,
@@ -233,7 +233,6 @@ function play(guild, song) {
                                 });
 
   dispatcher.setVolume(serverQueue.volume);
-  serverQueue.textChannel.send(`*Sigh*, I'm playing **${song.title}**`);
 }
 
 function stop(message, serverQueue) {
