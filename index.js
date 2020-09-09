@@ -92,11 +92,10 @@ async function execute(message, serverQueue) {
   }
 
   if (serverQueue && serverQueue.isBroadcast) {
-    // Stops broadcast
+    // Flushes the broadcast
     stop(message, serverQueue);
-    serverQueue.isBroadcast = false;
+    return execute(message, undefined);
   }
-
 
   const songInfo = await ytdl.getInfo(args[2]);
   const song = {
@@ -172,20 +171,21 @@ async function printMenu(message) {
 
 async function playlist(message, serverQueue) {
 
-  const playlist = message.content.split(" ")[2];
+  const playlistName = message.content.split(" ")[2];
 
   const voiceChannel = message.member.voice.channel;
 
   if (serverQueue) {
-    // Cleans current channel and queue
+    // Flushes the broadcast
     stop(message, serverQueue);
+    return playlist(message, undefined);
   }
 
   if (!voiceChannel) {
     return message.channel.send(messages.NOT_ON_VOICE_CHANNEL);
   }
 
-  const dir = fs.readdir(`./playlists/${playlist}`, async (err, files) => {
+  const dir = fs.readdir(`./playlists/${playlistName}`, async (err, files) => {
     if (err) {
       // Handle error
       return message.channel.send(messages.UNKNOWN_PLAYLIST)
@@ -194,7 +194,7 @@ async function playlist(message, serverQueue) {
     const songs = shuffle(
       files.map((file) => ({
       title: file,
-      url: `./playlists/${playlist}/${file}`,
+      url: `./playlists/${playlistName}/${file}`,
     })));
 
     const queueConstruct = {
@@ -272,7 +272,12 @@ function stop(message, serverQueue) {
   };
 
   serverQueue.songs = [];
-  serverQueue.connection.dispatcher.end();
+
+  if (serverQueue.isBroadcast) {
+    serverQueue.connection.dispatcher.broadcast.player.dispatcher.end();
+  } else {
+    serverQueue.connection.dispatcher.end();
+  }
 }
 
 function skip(message, serverQueue) {
@@ -300,7 +305,7 @@ function printQueue(message, serverQueue) {
     return message.channel.send(messages.EMPTY_QUEUE)
   }
 
-  const queueMessage = messages.QUEUE_HEADER;
+  let queueMessage = messages.QUEUE_HEADER;
   serverQueue.songs.forEach((song) => queueMessage += `- ${song.title}\n`)
 
   return message.channel.send(queueMessage);
