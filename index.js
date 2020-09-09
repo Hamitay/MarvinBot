@@ -93,6 +93,7 @@ async function execute(message, serverQueue) {
   };
 
   if (!serverQueue) {
+    console.log('Sem server queue')
     const queueConstruct = {
       textChannel: message.channel,
       voiceChannel: voiceChannel,
@@ -115,7 +116,7 @@ async function execute(message, serverQueue) {
       console.error(err);
       queue.delete(message.guild.id);
 
-      return message.channel.send(messages.UNKNOWN_ERROR(error));
+      return message.channel.send(messages.UNKNOWN_ERROR(err));
     }
 
   } else {
@@ -133,12 +134,9 @@ function setVolume(message, serverQueue) {
     return message.channel.send(messages.NOT_ON_VOICE_CHANNEL);
   }
 
-  let volume = args[2];
-
-  const dispatcher = serverQueue.connection.dispatcher;
+  const volume = args[2]/100;
 
   if (serverQueue.isBroadcast) {
-    volume = volume/100;
     serverQueue.connection.dispatcher.broadcast.player.dispatcher.setVolume(volume);
   } else {
     serverQueue.connection.dispatcher.setVolume(volume);
@@ -195,7 +193,6 @@ async function playlist(message, serverQueue) {
   });
 }
 
-
 function play_broadcast(guild, song) {
   const serverQueue = queue.get(guild.id);
 
@@ -231,6 +228,8 @@ function play(guild, song) {
                                 .on("finish", () => {
                                   serverQueue.songs.shift();
                                   play(guild, serverQueue.songs[0])
+                                }).on("error", (err) => {
+                                  console.error(err);
                                 });
 
   dispatcher.setVolume(serverQueue.volume);
@@ -246,7 +245,7 @@ function stop(message, serverQueue) {
   serverQueue.connection.dispatcher.end();
 }
 
-function skip(message, servplay_youtubeerQueue) {
+function skip(message, serverQueue) {
   if (!message.member.voice.channel) {
     return message.channel.send(messages.NOT_ON_VOICE_CHANNEL);
   };
