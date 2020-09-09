@@ -92,14 +92,13 @@ async function execute(message, serverQueue) {
     url: songInfo.video_url,
   };
 
-  if (!serverQueue) {
-    console.log('Sem server queue')
+  if (!serverQueue || serverQueue.isBroadcast) {
     const queueConstruct = {
       textChannel: message.channel,
       voiceChannel: voiceChannel,
       connection: undefined,
       songs: [],
-      volume: 50,
+      volume: 1,
       playing: true,
     };
 
@@ -210,7 +209,6 @@ function play_broadcast(guild, song) {
   .setVolume(serverQueue.volume);
 
   serverQueue.connection.play(broadcast).on("error", error => console.error(error));
-  serverQueue.textChannel.send(`*Sigh*, I'm playing **${song.title}**`);
   serverQueue.isBroadcast = true;
 }
 
@@ -230,6 +228,8 @@ function play(guild, song) {
                                   play(guild, serverQueue.songs[0])
                                 }).on("error", (err) => {
                                   console.error(err);
+                                  serverQueue.songs = [];
+                                  serverQueue.connection.dispatcher.end();
                                 });
 
   dispatcher.setVolume(serverQueue.volume);
@@ -254,7 +254,11 @@ function skip(message, serverQueue) {
     return message.channel.send('There is not any song for me to skip, it is all silence and horror like the void of space');
   };
 
-  serverQueue.connection.dispatcher.end();
+  if (serverQueue.isBroadcast) {
+    serverQueue.connection.dispatcher.broadcast.player.dispatcher.end();
+  } else {
+    serverQueue.connection.dispatcher.end();
+  }
 }
 
 function printQueue(message, serverQueue) {
