@@ -91,16 +91,11 @@ async function execute(message, serverQueue) {
     return message.channel.send(messages.NOT_ON_VOICE_CHANNEL);
   }
 
-  if (serverQueue && serverQueue.isBroadcast) {
-    // Flushes the broadcast
-    stop(message, serverQueue);
-    return execute(message, undefined);
-  }
-
   const songInfo = await ytdl.getInfo(args[2]);
   const song = {
     title: songInfo.title,
     url: songInfo.video_url,
+    isYoutube: true,
   };
 
   if (!serverQueue) {
@@ -133,6 +128,54 @@ async function execute(message, serverQueue) {
     serverQueue.songs.push(song);
     return message.channel.send(messages.PLAYING_SONG(song.title));
   }
+}
+
+async function playlist(message, serverQueue) {
+
+  const playlistName = message.content.split(" ")[2];
+
+  const voiceChannel = message.member.voice.channel;
+
+  if (!voiceChannel) {
+    return message.channel.send(messages.NOT_ON_VOICE_CHANNEL);
+  }
+
+  const dir = fs.readdir(`./playlists/${playlistName}`, async (err, files) => {
+    if (err) {
+      // Handle error
+      return message.channel.send(messages.UNKNOWN_PLAYLIST)
+    }
+
+    const songs = shuffle(
+      files.map((file) => ({
+      title: file,
+      url: `./playlists/${playlistName}/${file}`,
+      isYoutube: false,
+    })));
+
+    const queueConstruct = {
+      textChannel: message.channel,
+      voiceChannel: voiceChannel,
+      connection: undefined,
+      songs,
+      volume: 1,
+      playing: true,
+    };
+
+    queue.set(message.guild.id, queueConstruct);
+
+    try {
+      const connection = await voiceChannel.join();
+      queueConstruct.connection = connection;
+
+      play(message.guild, queueConstruct.songs[0]);
+    } catch (err) {
+      console.error(err);
+      queue.delete(message.guild.id);
+
+      return message.channel.send(messages.UNKNOWN_ERROR(error));
+    }
+  });
 }
 
 function setVolume(message, serverQueue) {
@@ -169,79 +212,6 @@ async function printMenu(message) {
   })
 }
 
-async function playlist(message, serverQueue) {
-
-  const playlistName = message.content.split(" ")[2];
-
-  const voiceChannel = message.member.voice.channel;
-
-  if (serverQueue) {
-    // Flushes the broadcast
-    stop(message, serverQueue);
-    return playlist(message, undefined);
-  }
-
-  if (!voiceChannel) {
-    return message.channel.send(messages.NOT_ON_VOICE_CHANNEL);
-  }
-
-  const dir = fs.readdir(`./playlists/${playlistName}`, async (err, files) => {
-    if (err) {
-      // Handle error
-      return message.channel.send(messages.UNKNOWN_PLAYLIST)
-    }
-
-    const songs = shuffle(
-      files.map((file) => ({
-      title: file,
-      url: `./playlists/${playlistName}/${file}`,
-    })));
-
-    const queueConstruct = {
-      textChannel: message.channel,
-      voiceChannel: voiceChannel,
-      connection: undefined,
-      songs,
-      volume: 1,
-      playing: true,
-    };
-
-    queue.set(message.guild.id, queueConstruct);
-
-    try {
-      const connection = await voiceChannel.join();
-      queueConstruct.connection = connection;
-
-      play_broadcast(message.guild, queueConstruct.songs[0]);
-    } catch (err) {
-      console.error(err);
-      queue.delete(message.guild.id);
-
-      return message.channel.send(messages.UNKNOWN_ERROR(error));
-    }
-  });
-}
-
-function play_broadcast(guild, song) {
-  const serverQueue = queue.get(guild.id);
-
-  if (!song) {
-    serverQueue.voiceChannel.leave();
-    queue.delete(guild.id);
-    return;
-  }
-
-  const broadcast = client.voice.createBroadcast();
-  broadcast.play(song.url).on("finish", () => {
-    serverQueue.songs.shift();
-    play_broadcast(guild, serverQueue.songs[0]);
-  })
-  .setVolume(serverQueue.volume);
-
-  serverQueue.connection.play(broadcast).on("error", error => console.error(error));
-  serverQueue.isBroadcast = true;
-}
-
 function play(guild, song) {
   const serverQueue = queue.get(guild.id);
 
@@ -252,7 +222,7 @@ function play(guild, song) {
   }
 
   const dispatcher = serverQueue.connection
-                                .play(ytdl(song.url))
+                                .play(song.isYoutube ? ytdl(song.url) : song.url)
                                 .on("finish", () => {
                                   serverQueue.songs.shift();
                                   play(guild, serverQueue.songs[0])
@@ -272,12 +242,7 @@ function stop(message, serverQueue) {
   };
 
   serverQueue.songs = [];
-
-  if (serverQueue.isBroadcast) {
-    serverQueue.connection.dispatcher.broadcast.player.dispatcher.end();
-  } else {
-    serverQueue.connection.dispatcher.end();
-  }
+  serverQueue.connection.dispatcher.end();
 }
 
 function skip(message, serverQueue) {
@@ -289,11 +254,7 @@ function skip(message, serverQueue) {
     return message.channel.send(messages.NON_SKIPPABLE);
   };
 
-  if (serverQueue.isBroadcast) {
-    serverQueue.connection.dispatcher.broadcast.player.dispatcher.end();
-  } else {
-    serverQueue.connection.dispatcher.end();
-  }
+  serverQueue.connection.dispatcher.end();
 }
 
 function printQueue(message, serverQueue) {
@@ -311,7 +272,7 @@ function printQueue(message, serverQueue) {
   return message.channel.send(queueMessage);
 }
 
-function printHelp(message, serverQueue) {
+function printHelp(message) {
   const helpCommands =
     Object.entries(commands).map((command) => `-> **${command[0]}**: ${command[1].description} \n`).join('\n');
 
