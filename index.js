@@ -90,13 +90,21 @@ async function execute(message, serverQueue) {
   if (!voiceChannel) {
     return message.channel.send(messages.NOT_ON_VOICE_CHANNEL);
   }
+
+  if (serverQueue && serverQueue.isBroadcast) {
+    // Stops broadcast
+    stop(message, serverQueue);
+    serverQueue.isBroadcast = false;
+  }
+
+
   const songInfo = await ytdl.getInfo(args[2]);
   const song = {
     title: songInfo.title,
     url: songInfo.video_url,
   };
 
-  if (!serverQueue || serverQueue.isBroadcast) {
+  if (!serverQueue) {
     const queueConstruct = {
       textChannel: message.channel,
       voiceChannel: voiceChannel,
@@ -162,11 +170,16 @@ async function printMenu(message) {
   })
 }
 
-async function playlist(message) {
+async function playlist(message, serverQueue) {
 
   const playlist = message.content.split(" ")[2];
 
   const voiceChannel = message.member.voice.channel;
+
+  if (serverQueue) {
+    // Cleans current channel and queue
+    stop(message, serverQueue);
+  }
 
   if (!voiceChannel) {
     return message.channel.send(messages.NOT_ON_VOICE_CHANNEL);
