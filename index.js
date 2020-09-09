@@ -22,7 +22,7 @@ const commands = {
   },
   'play': {
     function: execute,
-    description: 'Plays a song from a youtube link.',
+    description: 'Plays a song from a youtube link. \n\t I will stop any playlist if you ask me to play a youtube song.',
   },
   'stop': {
     function: stop,
@@ -42,7 +42,7 @@ const commands = {
   },
   'playlist': {
     function: playlist,
-    description: 'Sets the queue to one of the premades playlists'
+    description: 'Sets the queue to one of the premades playlists; \n\t I will stop any youtube song if you ask me to play a playlist.'
   },
 };
 
@@ -251,7 +251,7 @@ function skip(message, serverQueue) {
   };
 
   if(!serverQueue) {
-    return message.channel.send('There is not any song for me to skip, it is all silence and horror like the void of space');
+    return message.channel.send(messages.NON_SKIPPABLE);
   };
 
   if (serverQueue.isBroadcast) {
@@ -263,14 +263,14 @@ function skip(message, serverQueue) {
 
 function printQueue(message, serverQueue) {
   if (!message.member.voice.channel) {
-    return message.channel.send('There is no queue, how dissapointing. I\'m not in a voice channel');
+    return message.channel.send(messages.NO_QUEUE);
   };
 
   if(!serverQueue) {
-    return message.channel.send('The queue is empty, it is all silence and horror like the void of space')
+    return message.channel.send(messages.EMPTY_QUEUE)
   }
 
-  let queueMessage = 'Here are the songs \n';
+  const queueMessage = messages.QUEUE_HEADER;
   serverQueue.songs.forEach((song) => queueMessage += `- ${song.title}\n`)
 
   return message.channel.send(queueMessage);
@@ -278,7 +278,7 @@ function printQueue(message, serverQueue) {
 
 function printHelp(message, serverQueue) {
   const helpCommands =
-    Object.entries(commands).map((command) => `-> **${command[0]}**: ${command[1].description} \n`).join('');
+    Object.entries(commands).map((command) => `-> **${command[0]}**: ${command[1].description} \n`).join('\n');
 
   const helpMessage = messages.HELP_HEADER + helpCommands;
   return message.channel.send(helpMessage);

@@ -8,6 +8,10 @@ module.exports = Object.freeze({
   CHANGE_VOLUME: 'Yeah I will change the volume, it is not like you care if I can listen to it!',
   UNKNOWN_PLAYLIST: 'I believe this is a non-existant playlist',
   ASK_FOR_HELP_MESSAGE: 'Well it appears you are speaking gibberish. I suppose I could **help** you if you ask nicely.',
-  HELP_HEADER: 'I have the brain the size of a planet, there is nothing I can\'t do. However those are the things I might do for you if I\'m '+
+  HELP_HEADER: 'I have the brain the size of a planet, there is nothing I can\'t do. Those are the things I might do for you if I\'m '+
   'feeling good, which I\'m not \n',
+  NON_SKIPPABLE: 'There is not any song for me to skip, it is all silence and horror like the void of space',
+  EMPTY_QUEUE: 'The queue is empty, it is all silence and horror like the void of space',
+  QUEUE_HEADER: 'Here are the songs in the queue: \n',
+  NO_QUEUE: 'There is no queue, how dissapointing. I\'m not in a voice channel',
 });
