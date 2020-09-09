@@ -42,8 +42,12 @@ const commands = {
   },
   'playlist': {
     function: playlist,
-    description: 'Sets the queue to one of the premades playlists; \n\t I will stop any youtube song if you ask me to play a playlist.'
+    description: 'Sets the queue to one of the premades playlists; \n\t I will stop any youtube song if you ask me to play a playlist.',
   },
+  'menu': {
+    function: printMenu,
+    description: 'Prints the available playlists',
+  }
 };
 
 client.login(token);
@@ -145,7 +149,20 @@ function setVolume(message, serverQueue) {
   return message.channel.send(messages.CHANGE_VOLUME);
 }
 
-async function playlist(message, serverQueue) {
+async function printMenu(message) {
+  const dir = fs.readdir('./playlists', async (err, files) => {
+    if(err) {
+      // Handle error
+      return message.channel.send(messages.UNKNOWN_ERROR(err));
+    };
+
+    const menu = files.map((file) => `-> ${file}`);
+
+    return message.channel.send([messages.MENU_HEADER, ...menu]);
+  })
+}
+
+async function playlist(message) {
 
   const playlist = message.content.split(" ")[2];
 

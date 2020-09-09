@@ -14,4 +14,5 @@ module.exports = Object.freeze({
   EMPTY_QUEUE: 'The queue is empty, it is all silence and horror like the void of space',
   QUEUE_HEADER: 'Here are the songs in the queue: \n',
   NO_QUEUE: 'There is no queue, how dissapointing. I\'m not in a voice channel',
+  MENU_HEADER: 'Those are the available playlists: \n',
 });
