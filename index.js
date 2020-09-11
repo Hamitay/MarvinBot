@@ -116,7 +116,7 @@ async function execute(message, serverQueue) {
       const connection = await voiceChannel.join();
       queueConstruct.connection = connection;
 
-      play(message.guild, queueConstruct.songs[0]);
+      play(message.guild, queueConstruct.songs[0], message.channel);
     } catch (err) {
       console.error(err);
       queue.delete(message.guild.id);
@@ -168,7 +168,7 @@ async function playlist(message, serverQueue) {
       const connection = await voiceChannel.join();
       queueConstruct.connection = connection;
 
-      play(message.guild, queueConstruct.songs[0]);
+      play(message.guild, queueConstruct.songs[0], message.channel);
     } catch (err) {
       console.error(err);
       queue.delete(message.guild.id);
@@ -212,7 +212,7 @@ async function printMenu(message) {
   })
 }
 
-function play(guild, song) {
+function play(guild, song, channel) {
   const serverQueue = queue.get(guild.id);
 
   if (!song) {
@@ -225,9 +225,10 @@ function play(guild, song) {
                                 .play(song.isYoutube ? ytdl(song.url) : song.url)
                                 .on("finish", () => {
                                   serverQueue.songs.shift();
-                                  play(guild, serverQueue.songs[0])
+                                  play(guild, serverQueue.songs[0], channel)
                                 }).on("error", (err) => {
                                   console.error(err);
+                                  channel.send(`It appears I have failed: ${err}`);
                                   serverQueue.songs = [];
                                   serverQueue.connection.dispatcher.end();
                                 });
