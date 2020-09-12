@@ -1,7 +1,8 @@
 const ytdl = require('ytdl-core');
+const scdl = require("soundcloud-downloader");
 
 const messages = require('../messages');
-const { play } = require('../player');
+const { play, isYoutube, isSoundcloud,  } = require('../player');
 
 const execute = async (message) => {
   const args = message.content.split(" ");
@@ -12,12 +13,7 @@ const execute = async (message) => {
     return message.channel.send(messages.NOT_ON_VOICE_CHANNEL);
   }
 
-  // Get soundcloud song info
-  const song = {
-    title: 'songInfo.title',
-    url: args[2],
-  };
-
+  const song = await buildSong(args[2]);
   const serverQueue = message.client.queue.get(message.guild.id);
 
   if (!serverQueue) {
@@ -49,6 +45,30 @@ const execute = async (message) => {
     serverQueue.songs.push(song);
     return message.channel.send(messages.PLAYING_SONG(song.title));
   }
+}
+
+const buildSong = async (url) => {
+  // Get soundcloud song info
+  if (isYoutube(song)) {
+    const songInfo = await ytdl.getInfo(url);
+    return {
+      title: songInfo.title,
+      url: songInfo.video_url,
+    };
+  };
+
+  if (isSoundcloud(song)) {
+    const songInfo = await scdl.getInfo(url)
+    return {
+      title: songInfo.title,
+      url,
+    };
+  };
+
+  return {
+    title: '',
+    url
+  };
 }
 
 module.exports = execute;

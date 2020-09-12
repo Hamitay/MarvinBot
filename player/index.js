@@ -65,4 +65,6 @@ const isPlaylist = (song) => song.url.includes(PLAYLIST_URL);
 module.exports = {
   play,
   resolveStream,
+  isYoutube,
+  isSoundcloud,
 };
