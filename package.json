@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Amitay",
   "license": "ISC",
@@ -16,5 +16,8 @@
     "shuffle-array": "^1.0.1",
     "soundcloud-downloader": "^0.1.6",
     "ytdl-core": "^2.1.7"
+  },
+  "devDependencies": {
+    "jest": "^26.4.2"
   }
 }

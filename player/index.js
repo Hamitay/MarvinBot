@@ -1,4 +1,4 @@
-const ytdl = require('ytdl-core');
+const ytdl = require("ytdl-core");
 const scdl = require("soundcloud-downloader");
 
 const YOUTUBE_URL = "youtube.com";
@@ -8,7 +8,7 @@ const PLAYLIST_URL = "/playlists/";
 const SOUNDCLOUD_CLIENT_ID = process.env.SOUNDCLOUD_CLIENT_ID;
 
 const play = async (song, message) => {
-  const { client, channel, guild} = message;
+  const { client, guild} = message;
 
   const { queue } = client;
   const serverQueue = queue.get(guild.id);
@@ -48,7 +48,7 @@ const resolveStream = async (song) => {
     return await ytdl(song.url);
   }
 
-  if (isSoundcloud(song) && SOUNDCLOUD_CLIENT_ID) {
+  if (isSoundcloud(song)) {
     return await scdl.downloadFormat(song.url, scdl.FORMATS.MP3, SOUNDCLOUD_CLIENT_ID);
   }
 
@@ -64,4 +64,5 @@ const isPlaylist = (song) => song.url.includes(PLAYLIST_URL);
 
 module.exports = {
   play,
+  resolveStream,
 };
