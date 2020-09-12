@@ -15,4 +15,5 @@ module.exports = Object.freeze({
   QUEUE_HEADER: 'Here are the songs in the queue: \n',
   NO_QUEUE: 'There is no queue, how dissapointing. I\'m not in a voice channel',
   MENU_HEADER: 'Those are the available playlists: \n',
+  NO_SONGS: 'There are no songs playing right now. How do you expect me to change the volume of complete silence?'
 });
