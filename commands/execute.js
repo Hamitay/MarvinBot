@@ -1,8 +1,9 @@
-const ytdl = require('ytdl-core');
+const ytdl = require("ytdl-core");
+const ytpl = require("ytpl")
 const scdl = require("soundcloud-downloader");
 
-const messages = require('../messages');
-const { play, isYoutube, isSoundcloud,  } = require('../player');
+const messages = require("../messages");
+const { play, isYoutube, isSoundcloud, isYoutubePlaylist } = require("../player");
 
 const execute = async (message) => {
   const args = message.content.split(" ");
@@ -13,7 +14,7 @@ const execute = async (message) => {
     return message.channel.send(messages.NOT_ON_VOICE_CHANNEL);
   }
 
-  const song = await buildSong(args[2]);
+  const songs = await buildSongs(args[2]);
   const serverQueue = message.client.queue.get(message.guild.id);
 
   if (!serverQueue) {
@@ -21,14 +22,13 @@ const execute = async (message) => {
       textChannel: message.channel,
       voiceChannel: voiceChannel,
       connection: undefined,
-      songs: [],
+      songs,
       volume: 1,
       playing: true,
     };
 
     // Add that channels queue to the server queues
     message.client.queue.set(message.guild.id, queueConstruct);
-    queueConstruct.songs.push(song);
 
     try {
       const connection = await voiceChannel.join();
@@ -42,33 +42,45 @@ const execute = async (message) => {
     }
 
   } else {
-    serverQueue.songs.push(song);
+    songs.forEach((song) => serverQueue.songs.push(song));
     return message.channel.send(messages.PLAYING_SONG(song.title));
   }
 }
 
-const buildSong = async (url) => {
-  // Get soundcloud song info
-  if (isYoutube(song)) {
-    const songInfo = await ytdl.getInfo(url);
-    return {
-      title: songInfo.title,
-      url: songInfo.video_url,
-    };
-  };
+const buildSongs = async (url) => {
+  if (isYoutube(url)) {
+    if (isYoutubePlaylist(url)) {
+      const playlist = await ytpl(url);
 
-  if (isSoundcloud(song)) {
+
+      const songs = playlist.items.map((item) => ({
+        title: item.title,
+        url: item.url,
+      }));
+
+      return songs;
+      
+    } else {
+      const songInfo = await ytdl.getInfo(url);
+      return [{
+        title: songInfo.title,
+        url: songInfo.video_url,
+      }];
+    }
+  }
+
+  if (isSoundcloud(url)) {
     const songInfo = await scdl.getInfo(url)
-    return {
+    return [{
       title: songInfo.title,
       url,
-    };
+    }];
   };
 
-  return {
+  return [{
     title: '',
     url
-  };
+  }];
 }
 
 module.exports = execute;

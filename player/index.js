@@ -4,6 +4,7 @@ const scdl = require("soundcloud-downloader");
 const YOUTUBE_URL = "youtube.com";
 const SOUNDCLOUD_URL = "soundcloud.com";
 const PLAYLIST_URL = "/playlists/";
+const YT_PLAYLIST_URL = "/playlist?list=";
 
 const SOUNDCLOUD_CLIENT_ID = process.env.SOUNDCLOUD_CLIENT_ID;
 
@@ -44,27 +45,29 @@ const play = async (song, message) => {
 }
 
 const resolveStream = async (song) => {
-  if (isYoutube(song)) {
+  if (isYoutube(song.url)) {
     return await ytdl(song.url);
   }
 
-  if (isSoundcloud(song)) {
+  if (isSoundcloud(song.url)) {
     return await scdl.downloadFormat(song.url, scdl.FORMATS.MP3, SOUNDCLOUD_CLIENT_ID);
   }
 
-  if (isPlaylist(song)) {
+  if (isPlaylist(song.url)) {
     return song.url;
   }
   throw new Error("Invalid stream");
 }
 
-const isYoutube = (song) => song.url.includes(YOUTUBE_URL);
-const isSoundcloud = (song) => song.url.includes(SOUNDCLOUD_URL);
-const isPlaylist = (song) => song.url.includes(PLAYLIST_URL);
+const isYoutube = (url) => url.includes(YOUTUBE_URL);
+const isSoundcloud = (url) => url.includes(SOUNDCLOUD_URL);
+const isPlaylist = (url) => url.includes(PLAYLIST_URL);
+const isYoutubePlaylist = (url) => url.includes(YT_PLAYLIST_URL);
 
 module.exports = {
   play,
   resolveStream,
   isYoutube,
   isSoundcloud,
+  isYoutubePlaylist,
 };
