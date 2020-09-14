@@ -43,7 +43,7 @@ const execute = async (message) => {
 
   } else {
     songs.forEach((song) => serverQueue.songs.push(song));
-    return message.channel.send(messages.PLAYING_SONG(song.title));
+    return message.channel.send(messages.PLAYING_SONG(song[0].title));
   }
 }
 
@@ -59,7 +59,7 @@ const buildSongs = async (url) => {
       }));
 
       return songs;
-      
+
     } else {
       const songInfo = await ytdl.getInfo(url);
       return [{
