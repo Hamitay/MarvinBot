@@ -23,7 +23,7 @@ const execute = async (message) => {
       voiceChannel: voiceChannel,
       connection: undefined,
       songs,
-      volume: 1,
+      volume: 0.2,
       playing: true,
     };
 
