@@ -40,7 +40,7 @@ $ docker run -e DISCORD_TOKEN=<discord_token> -e SOUNDCLOUD_CLIENT_ID=<soundclou
 
 Marvin has a built-in feature that allows the administrator to set up playlists from local music files.
 
-Marvin will look for folders inside the `./playlists` directory and uses them as a sort of menu, for instance, suppose we had the following folder structure:
+Marvin will look for folders inside the `./playlists` directory and use them as a sort of menu, for instance, suppose we had the following folder structure:
 
 ```
 marvin_home_directory
@@ -57,9 +57,9 @@ marvin_home_directory
 
 ```
 
-By running `_marvin menu` on discord, marvin will output both the `awesome_songs` and `goldies`.
+By running `_marvin menu` on discord, marvin will output both the `awesome_songs` and `goldies` folders as playlist options.
 
-Lastly by running `_marvin playlist goldies` marvin will play both `Hurricane.mp3` and `YouDreamFlatTires.mp3` in a random order.
+Lastly by running `_marvin playlist goldies` marvin will play both `Hurricane.mp3` and `YouDreamFlatTires.mp3` songs in a random order.
 
 ### Playlists and Docker
 
