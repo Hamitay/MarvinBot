@@ -11,7 +11,7 @@ const execute = async (message) => {
   const voiceChannel = message.member.voice.channel;
 
   if (!voiceChannel) {
-    return message.channel.send(messages.NOT_ON_VOICE_CHANNEL);
+    return message.channel.send(messages.NOT_IN_VOICE_CHANNEL);
   }
 
   const songs = await buildSongs(args[2]);
@@ -29,7 +29,6 @@ const execute = async (message) => {
 
     // Add that channels queue to the server queues
     message.client.queue.set(message.guild.id, queueConstruct);
-
     try {
       const connection = await voiceChannel.join();
       queueConstruct.connection = connection;
@@ -43,7 +42,7 @@ const execute = async (message) => {
 
   } else {
     songs.forEach((song) => serverQueue.songs.push(song));
-    return message.channel.send(messages.PLAYING_SONG(song[0].title));
+    return message.channel.send(messages.PLAYING_SONG(songs[0].title));
   }
 }
 

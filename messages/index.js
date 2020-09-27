@@ -2,7 +2,7 @@ module.exports = Object.freeze({
   DEFAULT_MESSAGE: 'Don\'t talk to me about life',
   DEFAULT_FAILURE_MESSAGE: 'Oh I failed, how marvelous',
   DEFAULT_GOODBYE: 'Farewell',
-  NOT_ON_VOICE_CHANNEL: 'How do you expect me to play anything? I\'m not in a voice channel',
+  NOT_IN_VOICE_CHANNEL: 'How do you expect me to play anything? I\'m not in a voice channel',
   UNKNOWN_ERROR: (error) => `Unsurprisingly there has been an error: ${error}`,
   PLAYING_SONG: (title) => `Do you really want me to play: ${title}, it is awful`,
   CHANGE_VOLUME: 'Yeah I will change the volume, it is not like you care if I can listen to it!',

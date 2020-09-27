@@ -6,7 +6,7 @@ const setVolume = async (message) => {
   const voiceChannel = message.member.voice.channel;
 
   if (!voiceChannel) {
-    return message.channel.send(messages.NOT_ON_VOICE_CHANNEL);
+    return message.channel.send(messages.NOT_IN_VOICE_CHANNEL);
   }
 
   const volume = args[2]/100;
