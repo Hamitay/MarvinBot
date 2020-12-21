@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 
-const { prefix } = require('./config.json');
+const { prefix, alias } = require('./config.json');
 const messages = require('./messages');
 const commands = require('./commands');
 
@@ -25,7 +25,8 @@ client.once('disconnect', () => {
 client.on('message', async (message) => {
   if(message.author.bot) return;
 
-  if(!message.content.startsWith(prefix)) return;
+  const validMessage = message.content.startsWith(prefix) || message.content.startsWith(alias);
+  if(!validMessage) return;
 
   const args = message.content.split(" ");
   const command = args[1];
