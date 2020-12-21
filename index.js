@@ -4,7 +4,7 @@ const { prefix, alias } = require('./config.json');
 const messages = require('./messages');
 const commands = require('./commands');
 
-const token = 'NzI5MzM0NTUzMzA2NzI2NDkx.XwHbuw.R8nEHxIEQfEzQeaXKi3PUfOhsCU';
+const token = process.env.DISCORD_TOKEN;
 
 const client = new Discord.Client();
 client.login(token);
