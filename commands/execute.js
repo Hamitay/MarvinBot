@@ -51,7 +51,6 @@ const buildSongs = async (url) => {
     if (isYoutubePlaylist(url)) {
       const playlist = await ytpl(url);
 
-
       const songs = playlist.items.map((item) => ({
         title: item.title,
         url: item.url,
@@ -60,10 +59,10 @@ const buildSongs = async (url) => {
       return songs;
 
     } else {
-      const songInfo = await ytdl.getInfo(url);
+      const { songInfo } = await ytdl.getInfo(url);
       return [{
         title: songInfo.title,
-        url: songInfo.video_url,
+        url: url,
       }];
     }
   }
