@@ -59,9 +59,9 @@ const buildSongs = async (url) => {
       return songs;
 
     } else {
-      const { songInfo } = await ytdl.getInfo(url);
+      const song = await ytdl.getInfo(url);
       return [{
-        title: songInfo.title,
+        title: song.videoDetails ? song.videoDetails.title : url,
         url: url,
       }];
     }
