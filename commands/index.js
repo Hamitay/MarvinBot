@@ -5,6 +5,7 @@ const setVolume = require('./setVolume');
 const printQueue = require('./printQueue');
 const playlist = require('./playlist');
 const printMenu = require('./printMenu');
+const bind = require('./bind');
 
 const messages = require('../messages');
 
@@ -40,7 +41,11 @@ const commands = {
   'menu': {
     function: printMenu,
     description: 'Prints the available playlists',
-  }
+  },
+  'bind': {
+    function: bind,
+    description: 'Binds the chat id for hackerman purposes',
+  },
 };
 
 // TODO: find a better way of avoiding circular import
