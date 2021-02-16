@@ -1,4 +1,7 @@
 const Discord = require('discord.js');
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const { prefix, alias } = require('./config.json');
 const messages = require('./messages');
@@ -23,7 +26,7 @@ client.once('disconnect', () => {
 });
 
 client.on('message', async (message) => {
-  if(message.author.bot) return;
+  // if(message.author.bot) return;
 
   const validMessage = message.content.startsWith(prefix) || message.content.startsWith(alias);
   if(!validMessage) return;
@@ -38,3 +41,21 @@ client.on('message', async (message) => {
   return message.channel.send(messages.ASK_FOR_HELP_MESSAGE);
 });
 
+// TODO: add better structur for api, for now this is just a testable feature
+const app = express();
+app.use(cors());
+const port = 2000;
+app.post('/message', bodyParser.json(), (req, res) => {
+  const { message, id } = req.body;
+  const channel = client.channels.cache.get(id);
+
+  if(channel) {
+    channel.send(message);
+  } else {
+    return res.status(500);
+  }
+
+  return res.status(200);
+});
+
+app.listen(port);
