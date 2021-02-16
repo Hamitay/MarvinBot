@@ -45,17 +45,17 @@ client.on('message', async (message) => {
 const app = express();
 app.use(cors());
 const port = 2000;
-app.post('/message', bodyParser.json(), (req, res) => {
+app.post('/message', bodyParser.json(), async (req, res) => {
   const { message, id } = req.body;
   const channel = client.channels.cache.get(id);
 
   if(channel) {
-    channel.send(message);
+    await channel.send(message);
   } else {
-    return res.status(500);
+    return res.status(500).send();
   }
 
-  return res.status(200);
+  return res.status(200).send();
 });
 
 app.listen(port);
