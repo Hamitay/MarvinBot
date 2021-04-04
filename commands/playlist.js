@@ -31,7 +31,7 @@ const playlist = async (message) => {
       voiceChannel: voiceChannel,
       connection: undefined,
       songs,
-      volume: 0.2,
+      volume: DEFAULT_VOLUME,
       playing: true,
     };
 

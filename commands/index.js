@@ -6,6 +6,7 @@ const printQueue = require('./printQueue');
 const playlist = require('./playlist');
 const printMenu = require('./printMenu');
 const bind = require('./bind');
+const pjson = require('../package.json');
 
 const messages = require('../messages');
 
@@ -52,8 +53,8 @@ const commands = {
 function printHelp(message) {
   const helpCommands =
     Object.entries(commands).map((command) => `-> **${command[0]}**: ${command[1].description} \n`).join('\n');
-
-  const helpMessage = messages.HELP_HEADER + helpCommands;
+  const versionHeader = 'Marvin Bot version: ' + pjson.version + '\n';
+  const helpMessage = versionHeader + messages.HELP_HEADER + helpCommands;
   return message.channel.send(helpMessage);
 }
 

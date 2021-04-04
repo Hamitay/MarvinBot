@@ -3,6 +3,7 @@ const ytpl = require("ytpl")
 const scdl = require("soundcloud-downloader");
 
 const messages = require("../messages");
+const { DEFAULT_VOLUME } = require("./constants");
 const { play, isYoutube, isSoundcloud, isYoutubePlaylist } = require("../player");
 
 const execute = async (message) => {
@@ -23,7 +24,7 @@ const execute = async (message) => {
       voiceChannel: voiceChannel,
       connection: undefined,
       songs,
-      volume: 0.2,
+      volume: DEFAULT_VOLUME,
       playing: true,
     };
 
