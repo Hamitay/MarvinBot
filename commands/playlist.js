@@ -3,6 +3,7 @@ const shuffle = require('shuffle-array');
 
 const messages = require('../messages');
 const { play } = require('../player');
+const { DEFAULT_VOLUME } = require('./constants');
 
 const playlist = async (message) => {
   const playlistName = message.content.split(" ")[2];
