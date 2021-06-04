@@ -1,4 +1,5 @@
+import { Message } from "discord.js";
 export interface Command {
-  getDirective() : String;
-  execute(args: String[]) : void;
+  getDirective() : string;
+  execute(message: Message, args: string[]) : Promise<string>;
 }

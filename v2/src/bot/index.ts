@@ -1,50 +1,44 @@
-import { Client, Message } from 'discord.js';
+import { Message } from 'discord.js';
 import { injectable } from 'tsyringe';
+import DiscordClient from '../client';
 import Commands from '../commands';
-import SampleCommand from '../commands/SampleCommand';
-
-const token = process.env.DISCORD_TOKEN;
 
 const alias = '_m';
-
+const prefix = 'marvin';
 @injectable()
 export default class MarvinBot {
-
   _commands: Commands;
 
-  constructor(commands: Commands) {
+  _client: DiscordClient;
+
+  constructor(commands: Commands, discordClient: DiscordClient) {
     this._commands = commands;
+    this._client = discordClient;
   }
 
-  private _setUp(client: Client): Promise<string> {
-    client.once('ready', () => {
-      console.log('Im ready');
-    });
+  private _messageHandler = async (message: Message): Promise<any> => {
+    const { content } = message;
 
-    client.once('reconnecting', () => {
-      console.log('Im trying to reconnect');
-    });
+    if (content.startsWith(alias) || content.startsWith(prefix)) {
+      const sanitizedInpute = this.sanitizeInput(content);
 
-    client.once('disconnect', () => {
-      console.log('Im disconnected');
-    });
+      const result = (await this._commands.executeCommand(sanitizedInpute.directive,
+        sanitizedInpute.args, message));
+      return message.channel.send(result);
+    }
+  };
 
-    // Register commands here
-    client.on('message', (message: Message) => {
-      const { content } = message;
-
-      if (content.startsWith(alias)) {
-        this._commands.executeCommand('sample', []);
-        return message.channel.send("Working without recursion")
-      }
-    })
-
-    return client.login(token);
+  public sanitizeInput(input: string) {
+    const args = input.split(' ')
+      .filter((element) => element !== '')
+      .splice(1);
+    return {
+      directive: args[0],
+      args: args.splice(1),
+    };
   }
-
 
   public listen(): Promise<string> {
-    let client = new Client();
-    return this._setUp(client);
+    return this._client.init(this._messageHandler);
   }
 }

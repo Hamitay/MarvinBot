@@ -5,10 +5,10 @@ const DIRECTIVE = 'sample';
 
 @injectable()
 export default class SampleCommand implements Command {
-  getDirective(): String {
+  getDirective(): string {
     return DIRECTIVE;
   }
-  execute(): void {
-    console.log('Running sample');
+  execute(): Promise<string> {
+    return new Promise((resolve) => resolve('oi'));
   }
 }

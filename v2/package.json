@@ -15,6 +15,8 @@
     "discord.js": "^12.5.3",
     "reflect-metadata": "^0.1.13",
     "ts-node-dev": "^1.1.6",
-    "tsyringe": "^4.5.0"
+    "tsyringe": "^4.5.0",
+    "ytdl-core": "^4.8.2",
+    "ytpl": "^2.2.1"
   }
 }
