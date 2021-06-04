@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "discord.js": "^12.5.3",
-    "ts-node-dev": "^1.1.6"
+    "reflect-metadata": "^0.1.13",
+    "ts-node-dev": "^1.1.6",
+    "tsyringe": "^4.5.0"
   }
 }

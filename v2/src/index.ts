@@ -1,5 +1,6 @@
+import 'reflect-metadata';
+import { container } from 'tsyringe';
 import MarvinBot from './bot';
 
-const bot = new MarvinBot();
-
+const bot = container.resolve(MarvinBot);
 bot.listen();

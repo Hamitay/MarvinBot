@@ -1,7 +1,9 @@
+import { injectable } from 'tsyringe';
 import { Command } from './command';
 import SampleCommand from './SampleCommand';
 
 
+@injectable()
 export default class Commands {
 
   _commandMap: Map<String, Command>
