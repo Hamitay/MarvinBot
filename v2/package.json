@@ -1,0 +1,22 @@
+{
+  "name": "marvin",
+  "version": "1.0.0",
+  "description": "Marvin revamp",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.3.2"
+  },
+  "dependencies": {
+    "discord.js": "^12.5.3",
+    "reflect-metadata": "^0.1.13",
+    "ts-node-dev": "^1.1.6",
+    "tsyringe": "^4.5.0",
+    "ytdl-core": "^4.8.2",
+    "ytpl": "^2.2.1"
+  }
+}
