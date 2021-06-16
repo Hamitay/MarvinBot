@@ -34,7 +34,7 @@ export default class QueueService {
         voiceChannel: messageContext.member?.voice.channel,
         connection: undefined,
         songs: songs,
-        volume: 1,
+        volume: 0.25,
         playing: true,
       };
 
@@ -61,7 +61,7 @@ export default class QueueService {
   }
 
   public async deleteQueue(queue: ChannelQueue) {
-    await queue.connection?.dispatcher.end();
+    await queue.connection?.dispatcher?.end();
     await queue.voiceChannel?.leave();
     this.#queueMap.delete(queue.guildId);
   }

@@ -32,7 +32,7 @@ export default class SongService {
 
   public async execute(queue: ChannelQueue) {
     const songs = queue.songs;
-    if (!songs) {
+    if (!songs || songs.length === 0) {
       this.#queueService.deleteQueue(queue);
       return;
     }
