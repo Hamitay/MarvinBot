@@ -20,7 +20,7 @@
     "opusscript": "0.0.7",
     "shuffle-array": "^1.0.1",
     "soundcloud-downloader": "^0.1.6",
-    "ytdl-core": "^4.2.1",
+    "ytdl-core": "^4.9.0",
     "ytpl": "^2.0.3"
   },
   "devDependencies": {
