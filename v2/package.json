@@ -4,6 +4,7 @@
   "description": "Marvin revamp",
   "main": "index.js",
   "scripts": {
+    "start": "ts-node src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -16,7 +17,7 @@
     "reflect-metadata": "^0.1.13",
     "ts-node-dev": "^1.1.6",
     "tsyringe": "^4.5.0",
-    "ytdl-core": "^4.8.2",
+    "ytdl-core": "^4.9.0",
     "ytpl": "^2.2.1"
   }
 }

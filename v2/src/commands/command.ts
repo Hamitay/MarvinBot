@@ -1,5 +1,9 @@
 import { Message } from "discord.js";
-export interface Command {
-  getDirective() : string;
-  execute(message: Message, args: string[]) : Promise<string>;
+export abstract class Command {
+  abstract getDirective() : string;
+  abstract execute(message: Message, args: string[]) : Promise<string>;
+
+  respond(message: string): Promise<string> {
+    return new Promise((resolve) => resolve(message));
+  }
 }

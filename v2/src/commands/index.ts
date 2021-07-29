@@ -1,16 +1,16 @@
 import { Message } from 'discord.js';
 import { injectable } from 'tsyringe';
 import { Command } from './command';
-import PlayCommand from './PlayCommand';
-import SampleCommand from './SampleCommand';
-
+import PlayCommand from './play/PlayCommand';
+import StopCommand from './stop/StopCommand';
+import commonMessages from './commonMessages';
 @injectable()
 export default class Commands {
 
   _commandMap: Map<string, Command>
 
-  constructor(sampleCommand: SampleCommand, playCommand: PlayCommand) {
-    const commandList = [sampleCommand, playCommand]
+  constructor(playCommand: PlayCommand, stopCommand: StopCommand) {
+    const commandList = [playCommand, stopCommand]
     this._commandMap = this._registerCommands(commandList);
   }
 
@@ -30,6 +30,6 @@ export default class Commands {
       return command.execute(message, args);
     }
 
-    return new Promise((resolve) => resolve('error m8'));
+    return new Promise((resolve) => resolve(commonMessages.ASK_FOR_HELP_MESSAGE));
   }
 }

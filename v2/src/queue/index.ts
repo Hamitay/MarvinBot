@@ -19,7 +19,7 @@ export default class QueueService {
     return this.#queueMap.get(guildId);
   }
 
-  public addSongToQueue(messageContext: Message, songs: SongInfo[]) {
+  public addSongsToQueue(messageContext: Message, songs: SongInfo[]) {
     const guildId = messageContext.guild?.id;
     if (!guildId) {
       throw new Error('Guild id not provided');
@@ -58,6 +58,13 @@ export default class QueueService {
 
     queue.connection = await voiceChannel.join();
     return queue;
+  }
+
+  public async deleteQueueById(guildId: string) {
+    const queue = this.getQueue(guildId);
+    if (queue) {
+      await this.deleteQueue(queue);
+    }
   }
 
   public async deleteQueue(queue: ChannelQueue) {

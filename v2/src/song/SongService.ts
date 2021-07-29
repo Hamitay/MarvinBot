@@ -1,13 +1,12 @@
-import { Message, VoiceChannel } from "discord.js";
-import { injectable } from "tsyringe";
-import QueueService from "../queue";
-import ChannelQueue from "../queue/ChannelQueue";
-import YoutubeService from "../thirdParty/YoutubeService";
-import { SongInfo } from "./SongInfo";
+import { Message, VoiceChannel } from 'discord.js';
+import { injectable } from 'tsyringe';
+import QueueService from '../queue';
+import ChannelQueue from '../queue/ChannelQueue';
+import YoutubeService from '../thirdParty/YoutubeService';
+import { SongInfo } from './SongInfo';
 
 @injectable()
 export default class SongService {
-
   #youtubeService: YoutubeService;
 
   #queueService: QueueService;
@@ -21,11 +20,18 @@ export default class SongService {
     return await this.#youtubeService.getSongInfo(url);
   }
 
-  public async playSongAtChannel(songUrl: string, voiceChannel:VoiceChannel, messageContext: Message): Promise<SongInfo[]> {
+  public async playSongAtChannel(
+    songUrl: string,
+    voiceChannel: VoiceChannel,
+    messageContext: Message
+  ): Promise<SongInfo[]> {
     const songs = await this.getSongInfo(songUrl);
-    this.#queueService.addSongToQueue(messageContext, songs);
+    this.#queueService.addSongsToQueue(messageContext, songs);
 
-    const queue = await this.#queueService.connectQueueToChannel(messageContext, voiceChannel);
+    const queue = await this.#queueService.connectQueueToChannel(
+      messageContext,
+      voiceChannel
+    );
     this.execute(queue);
     return songs;
   }
@@ -39,7 +45,8 @@ export default class SongService {
 
     const stream = await this.getSongStream(songs[0].url);
 
-    const dispatcher = queue.connection?.play(stream, { type: 'unknown'})
+    const dispatcher = queue.connection
+      ?.play(stream, { type: 'unknown' })
       .on('finish', () => {
         queue.songs?.shift();
         this.execute(queue);
@@ -55,5 +62,4 @@ export default class SongService {
   public async getSongStream(url: string) {
     return await this.#youtubeService.getVideoStream(url);
   }
-
 }
