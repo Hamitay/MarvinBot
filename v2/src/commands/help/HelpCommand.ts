@@ -2,6 +2,9 @@ import { Message } from 'discord.js';
 import { Command } from '../command';
 import commonMessages from '../commonMessages';
 
+// Requiring outside root-dir
+const pjson = require('../../../package.json');
+
 const DIRECTIVE = 'help';
 
 export default class HelpCommand extends Command {
@@ -20,13 +23,11 @@ export default class HelpCommand extends Command {
     return 'Gives all the possible commands. But you probably already know this.';
   }
 
-  async execute(message: Message, args: string[]): Promise<string> {
-    const guildId = message.guild?.id;
+  getHelpHeader(): string {
+    return 'Marvin Bot version: ' + pjson.version + '\n';
+  }
 
-    if (!guildId) {
-      return this.respond(commonMessages.NO_GUILD_ID_ERROR);
-    }
-
+  buildHelpResponse(): string {
     const helpMessage = [...this.#commandList, this]
       .map(
         (command) =>
@@ -34,6 +35,16 @@ export default class HelpCommand extends Command {
       )
       .join('\n');
 
-    return this.respond(helpMessage);
+    return this.getHelpHeader() + helpMessage;
+  }
+
+  async execute(message: Message, args: string[]): Promise<string> {
+    const guildId = message.guild?.id;
+
+    if (!guildId) {
+      return this.respond(commonMessages.NO_GUILD_ID_ERROR);
+    }
+
+    return this.respond(this.buildHelpResponse());
   }
 }
