@@ -5,10 +5,10 @@ import { Command } from '../command';
 import messages from './messages';
 import commonMessages from '../commonMessages';
 
-const DIRECTIVE = 'stop';
+const DIRECTIVE = 'volume';
 
 @injectable()
-export default class StopCommand extends Command {
+export default class VolumeCommand extends Command {
   #queueService: QueueService;
 
   constructor(queueService: QueueService) {
@@ -21,7 +21,12 @@ export default class StopCommand extends Command {
   }
 
   getHelpMessage(): string {
-    return 'Stops the current song and clears the queue.';
+    return 'Changes the volume of the stream between 0% and 100%';
+  }
+
+  normalizeVolume(volume: number): number {
+    const boundedVolume = volume > 100 ? 100 : volume;
+    return boundedVolume / 100;
   }
 
   async execute(message: Message, args: string[]): Promise<string> {
@@ -31,15 +36,13 @@ export default class StopCommand extends Command {
       return this.respond(commonMessages.NO_GUILD_ID_ERROR);
     }
 
+    const newVolume = this.normalizeVolume(parseInt(args[0]));
     const queue = this.#queueService.getQueue(guildId);
-    const songs = queue?.songs;
-
-    if (!songs || songs.length === 0) {
-      return this.respond(messages.NO_SONGS_ERRORS);
+    if (queue) {
+      queue.volume = newVolume;
+      queue.connection?.dispatcher.setVolume(newVolume);
     }
 
-    this.#queueService.deleteQueueById(guildId);
-
-    return this.respond(messages.STOP_MESSAGE);
+    return this.respond(messages.VOLUME_UPDATE(newVolume));
   }
 }

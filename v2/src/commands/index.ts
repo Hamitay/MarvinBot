@@ -4,21 +4,32 @@ import { Command } from './command';
 import PlayCommand from './play/PlayCommand';
 import StopCommand from './stop/StopCommand';
 import QueueCommand from './queue/QueueCommand';
+import VolumeCommand from './volume/VolumeCommand';
+import HelpCommand from './help/HelpCommand';
 import commonMessages from './commonMessages';
 @injectable()
 export default class Commands {
-  _commandMap: Map<string, Command>;
+  #commandMap: Map<string, Command>;
 
   constructor(
     playCommand: PlayCommand,
     stopCommand: StopCommand,
-    queueCommand: QueueCommand
+    queueCommand: QueueCommand,
+    volumeCommand: VolumeCommand,
   ) {
-    const commandList = [playCommand, stopCommand, queueCommand];
-    this._commandMap = this._registerCommands(commandList);
+    const commandList = [
+      playCommand,
+      stopCommand,
+      queueCommand,
+      volumeCommand,
+    ];
+
+    // This explicit declaration is to avoid circular dependencies issues
+    const helpCommand = new HelpCommand(commandList)
+    this.#commandMap = this.registerCommands([...commandList, helpCommand]);
   }
 
-  private _registerCommands(commands: Command[]): Map<string, Command> {
+  private registerCommands(commands: Command[]): Map<string, Command> {
     const map = new Map();
     commands.forEach((command) => {
       map.set(command.getDirective(), command);
@@ -32,7 +43,7 @@ export default class Commands {
     args: string[],
     message: Message
   ): Promise<string> {
-    const command = this._commandMap.get(commandDirective);
+    const command = this.#commandMap.get(commandDirective);
 
     if (command) {
       return command.execute(message, args);

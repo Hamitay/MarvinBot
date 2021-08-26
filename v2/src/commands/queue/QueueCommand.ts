@@ -19,6 +19,11 @@ export default class QueueCommand extends Command {
   getDirective(): string {
     return DIRECTIVE;
   }
+
+  getHelpMessage(): string {
+    return 'Prints the current queue';
+  }
+
   async execute(message: Message, args: string[]): Promise<string> {
     const guildId = message.guild?.id;
 

@@ -20,6 +20,10 @@ export default class PlayCommand extends Command {
     return DIRECTIVE;
   }
 
+  getHelpMessage(): string {
+    return 'Plays a song from a youtube or soundcloud link or puts it at the bottom of the queue.';
+  }
+
   async execute(messageContext: Message, args: string[]): Promise<string> {
     if (args.length > 1) {
       return this.respond(commonMessages.UNKNOWN_NUMBER_OF_ARGUMENTS_ERROR);
