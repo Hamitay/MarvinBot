@@ -2,6 +2,7 @@ import { Message } from 'discord.js';
 import { injectable } from 'tsyringe';
 import { Command } from './command';
 import PlayCommand from './play/PlayCommand';
+import MenuCommand from './menu/MenuCommand';
 import StopCommand from './stop/StopCommand';
 import QueueCommand from './queue/QueueCommand';
 import VolumeCommand from './volume/VolumeCommand';
@@ -16,12 +17,14 @@ export default class Commands {
     stopCommand: StopCommand,
     queueCommand: QueueCommand,
     volumeCommand: VolumeCommand,
+    menuCommand: MenuCommand,
   ) {
     const commandList = [
       playCommand,
       stopCommand,
       queueCommand,
       volumeCommand,
+      menuCommand,
     ];
 
     // This explicit declaration is to avoid circular dependencies issues
