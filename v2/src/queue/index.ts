@@ -67,6 +67,13 @@ export default class QueueService {
     }
   }
 
+  public async purgeQueueById(guildId: string) {
+    const queue = this.getQueue(guildId);
+    if (queue) {
+      this.#queueMap.delete(queue.guildId)
+    }
+  }
+
   public async deleteQueue(queue: ChannelQueue) {
     await queue.connection?.dispatcher?.end();
     await queue.voiceChannel?.leave();
