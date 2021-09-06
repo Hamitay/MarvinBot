@@ -34,7 +34,7 @@ export default class QueueService {
         voiceChannel: messageContext.member?.voice.channel,
         connection: undefined,
         songs: songs,
-        volume: 0.25,
+        volume: 0.05,
         playing: true,
       };
 
