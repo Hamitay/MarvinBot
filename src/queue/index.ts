@@ -3,6 +3,7 @@ import { singleton } from 'tsyringe';
 import { SongInfo } from '../song/SongInfo';
 import ChannelQueue from './ChannelQueue';
 
+const DEFAULT_VOLUME = 0.05;
 @singleton()
 export default class QueueService {
   #queueMap: Map<string, ChannelQueue>;
@@ -34,7 +35,7 @@ export default class QueueService {
         voiceChannel: messageContext.member?.voice.channel,
         connection: undefined,
         songs: songs,
-        volume: 0.05,
+        volume: DEFAULT_VOLUME,
         playing: true,
       };
 
