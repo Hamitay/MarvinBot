@@ -3,6 +3,7 @@ import { injectable } from 'tsyringe';
 import QueueService from '../../queue';
 import { Command } from '../command';
 import commonMessages from '../commonMessages';
+import messages from './messages';
 
 const DIRECTIVE = 'skip';
 
@@ -10,14 +11,13 @@ const DIRECTIVE = 'skip';
 export default class SkipCommand extends Command {
   #queueService: QueueService;
 
-
   constructor(queueService: QueueService) {
-    super()
+    super();
     this.#queueService = queueService;
   }
 
   getDirective(): string {
-    return DIRECTIVE
+    return DIRECTIVE;
   }
 
   getHelpMessage(): string {
@@ -32,11 +32,11 @@ export default class SkipCommand extends Command {
     }
     const queue = this.#queueService.getQueue(guildId);
 
-    if(!queue) {
-      return this.respond('no queue m8');
+    if (!queue) {
+      return this.respond(messages.EMPTY_LIST);
     }
 
     queue.connection?.dispatcher.end();
-    return this.respond('skipping song')
+    return this.respond(messages.SKIPPING_SONG);
   }
 }
