@@ -7,6 +7,7 @@ import StopCommand from './stop/StopCommand';
 import QueueCommand from './queue/QueueCommand';
 import VolumeCommand from './volume/VolumeCommand';
 import HelpCommand from './help/HelpCommand';
+import SkipCommand from './skip/SkipCommand';
 import commonMessages from './commonMessages';
 @injectable()
 export default class Commands {
@@ -18,6 +19,7 @@ export default class Commands {
     queueCommand: QueueCommand,
     volumeCommand: VolumeCommand,
     menuCommand: MenuCommand,
+    skipCommand: SkipCommand
   ) {
     const commandList = [
       playCommand,
@@ -25,10 +27,11 @@ export default class Commands {
       queueCommand,
       volumeCommand,
       menuCommand,
+      skipCommand,
     ];
 
     // This explicit declaration is to avoid circular dependencies issues
-    const helpCommand = new HelpCommand(commandList)
+    const helpCommand = new HelpCommand(commandList);
     this.#commandMap = this.registerCommands([...commandList, helpCommand]);
   }
 

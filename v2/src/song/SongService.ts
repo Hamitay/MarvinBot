@@ -26,14 +26,25 @@ export default class SongService {
     messageContext: Message
   ): Promise<SongInfo[]> {
     const songs = await this.getSongInfo(songUrl);
-    this.#queueService.addSongsToQueue(messageContext, songs);
 
-    const queue = await this.#queueService.connectQueueToChannel(
-      messageContext,
-      voiceChannel
-    );
-    this.execute(queue);
-    return songs;
+    const guildId = messageContext.guild?.id;
+
+    if (guildId) {
+      const currentQueue = this.#queueService.getQueue(guildId);
+      this.#queueService.addSongsToQueue(messageContext, songs);
+
+      if(!currentQueue || !currentQueue.playing) {
+        const queue = await this.#queueService.connectQueueToChannel(
+          messageContext,
+          voiceChannel
+        );
+        this.execute(queue);
+      }
+
+      return songs;
+    } else {
+      throw new Error('No guild id');
+    }
   }
 
   public async execute(queue: ChannelQueue) {
