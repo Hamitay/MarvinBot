@@ -1,11 +1,10 @@
-import { Client, Message } from 'discord.js';
+import { Client, Message, TextChannel } from 'discord.js';
 import { singleton } from 'tsyringe';
 
 const token = process.env.DISCORD_TOKEN;
 
 @singleton()
 export default class DiscordClient {
-
   _client: Client;
 
   constructor() {
@@ -26,9 +25,25 @@ export default class DiscordClient {
     });
 
     // Register commands here
-    this._client.on('message', messageHandler)
+    this._client.on('message', messageHandler);
 
     return this._client.login(token);
   }
-}
 
+  public async postMessage(channelId: string, messageBody: string) {
+    const channel = this._client.channels.cache.get(channelId) as
+      | TextChannel
+      | undefined;
+
+    if (channel) {
+      try {
+        return await channel.send(messageBody);
+      } catch (e) {
+        console.error(e);
+        throw new Error('Error sending message');
+      }
+    } else {
+      throw new Error('Invalid channel id');
+    }
+  }
+}
