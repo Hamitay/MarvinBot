@@ -9,6 +9,7 @@ import VolumeCommand from './volume/VolumeCommand';
 import HelpCommand from './help/HelpCommand';
 import SkipCommand from './skip/SkipCommand';
 import PlaylistCommand from './playlist/PlaylistCommand';
+import BindCommand from './bind/BindCommand';
 import commonMessages from './commonMessages';
 @injectable()
 export default class Commands {
@@ -21,7 +22,8 @@ export default class Commands {
     volumeCommand: VolumeCommand,
     menuCommand: MenuCommand,
     skipCommand: SkipCommand,
-    playlistCommand: PlaylistCommand
+    playlistCommand: PlaylistCommand,
+    bindCommand: BindCommand
   ) {
     const commandList = [
       playCommand,
@@ -31,6 +33,7 @@ export default class Commands {
       menuCommand,
       skipCommand,
       playlistCommand,
+      bindCommand,
     ];
 
     // This explicit declaration is to avoid circular dependencies issues
