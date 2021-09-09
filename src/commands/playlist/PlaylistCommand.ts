@@ -1,10 +1,10 @@
 import { Message } from 'discord.js';
 import { injectable } from 'tsyringe';
 import PlaylistService from '../../playlist/PlaylistService';
-import QueueService from '../../queue';
 import SongService from '../../song/SongService';
 import { Command } from '../command';
 import commonMessages from '../commonMessages';
+import messages from './messages';
 
 const DIRECTIVE = 'playlist';
 
@@ -37,10 +37,9 @@ export default class PlaylistCommand extends Command {
     }
 
     const playlistName = args[0];
-    console.log(args)
     const songs = await this.#playlistService.getPlaylistSongs(playlistName);
 
     await this.#songService.playPlaylistAtChannel(songs, voiceChannel, message);
-    return await this.respond('oi');
+    return await this.respond(messages.PLAYING_PLAYLIST(playlistName));
   }
 }
