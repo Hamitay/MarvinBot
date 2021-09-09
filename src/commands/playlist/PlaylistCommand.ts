@@ -35,7 +35,7 @@ export default class PlaylistCommand extends Command {
   }
 
   async execute(message: Message, args: string[]): Promise<string> {
-    if (args.length > 1) {
+    if (args.length > 2) {
       return this.respond(commonMessages.UNKNOWN_NUMBER_OF_ARGUMENTS_ERROR);
     }
 
