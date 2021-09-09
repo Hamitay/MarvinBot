@@ -22,6 +22,7 @@ Both the Discord token and soundcloud client id should be exported as environmen
 ```
 export DISCORD_TOKEN=<discord_token>
 export SOUNDCLOUD_CLIENT_ID=<soundcloud_client_id>
+export API_ENABLED=<Wheter to expose the message api>
 export API_PORT=<Port to serve the api, defaults to 3000>
 ```
 
