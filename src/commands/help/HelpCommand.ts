@@ -33,7 +33,7 @@ export default class HelpCommand extends Command {
         (command) =>
           `-> **${command?.getDirective()}**: ${command?.getHelpMessage()}`
       )
-      .join('\n');
+      .join('\n\n');
 
     return this.getHelpHeader() + helpMessage;
   }
