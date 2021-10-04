@@ -17,7 +17,6 @@ export default class PlaylistService {
       );
     } catch (err) {
       console.error(err);
-      // To do make a better error
       throw new Error('No such file or directory');
     }
   }
@@ -26,17 +25,20 @@ export default class PlaylistService {
     playlistName: string
   ): Promise<string | undefined> {
     const playlists = await this.getAllPlaylists();
-    console.log(playlistName)
-    console.log(playlists);
     return playlists.get(playlistName);
   }
 
   public async getPlaylistSongs(playlistName: string): Promise<SongInfo[]> {
-    const playlistPath = await this.getPlaylistPathByName(playlistName);
-    console.log(playlistPath  )
+    let playlistPath;
+    try {
+      playlistPath = await this.getPlaylistPathByName(playlistName);
+    } catch (error) {
+      console.error(error);
+      throw new Error(`Error getting playlist ${playlistName}`)
+    }
+    
     if (!playlistPath) {
-      // To do make a better error
-      throw new Error('No such playlist');
+      throw new Error(`No such playlist ${playlistName}`)
     }
 
     const songFiles = await fs.promises.readdir(playlistPath);

@@ -1,6 +1,7 @@
 import { Message } from 'discord.js';
 import { injectable } from 'tsyringe';
 import PlaylistService from '../../playlist/PlaylistService';
+import { SongInfo } from '../../song/SongInfo';
 import SongService from '../../song/SongService';
 import { Command } from '../command';
 import commonMessages from '../commonMessages';
@@ -46,7 +47,14 @@ export default class PlaylistCommand extends Command {
     }
 
     const playlistName = args[0];
-    let songs = await this.#playlistService.getPlaylistSongs(playlistName);
+    let songs: SongInfo[] = []
+    try {
+      songs = await this.#playlistService.getPlaylistSongs(playlistName);
+    } catch (error) {
+      console.error(error)
+      return await this.respond(`Error playing unknown playlist ${playlistName}`);
+    }
+  
 
     if (this.#shouldShuffle(args)) {
       songs = shuffle(songs);

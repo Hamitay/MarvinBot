@@ -26,6 +26,7 @@ export default class SkipCommand extends Command {
 
   async execute(message: Message, args: string[]): Promise<string> {
     const guildId = message.guild?.id;
+    const numberOfSkips = parseInt(args[0]) || 1;
 
     if (!guildId) {
       return this.respond(commonMessages.NO_GUILD_ID_ERROR);
@@ -34,6 +35,10 @@ export default class SkipCommand extends Command {
 
     if (!queue) {
       return this.respond(messages.EMPTY_LIST);
+    }
+
+    if (numberOfSkips > 1) {
+      queue.songs = queue.songs?.slice(numberOfSkips - 1);
     }
 
     queue.connection?.dispatcher.end();
