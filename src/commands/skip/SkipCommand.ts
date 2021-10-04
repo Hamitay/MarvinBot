@@ -21,7 +21,11 @@ export default class SkipCommand extends Command {
   }
 
   getHelpMessage(): string {
-    return 'Skips the current song and plays the next one on the queue.';
+    return `Skips one or more songs and plays the next one on the queue.;
+    \tExample: *_m skip*
+    \tSkips the current song and plays the next one on the queue
+    \tExample: *_m skip 2*
+    \tSkips the next 2 songs and plays the next one on the queue`;
   }
 
   async execute(message: Message, args: string[]): Promise<string> {
