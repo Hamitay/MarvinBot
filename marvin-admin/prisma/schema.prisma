@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id Int @id @default(autoincrement())
+
+  name String @unique
+
+  passwordMd5 String
+
+  admin Boolean
+
+  playlists Playlist[]
+}
+
+model Playlist {
+  id Int @id @default(autoincrement())
+
+  name String @unique
+
+  videos Video[]
+
+  creatorId Int
+
+  creator User @relation(fields: [creatorId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @default(now())
+}
+
+model Video {
+  id Int @id @default(autoincrement())
+
+  name String
+
+  thirdPartyUrl String
+
+  url String
+
+  thumbnailUrl String
+
+  playlistId Int
+
+  playlist Playlist @relation(fields: [playlistId], references: [id])
+
+  status String
+}

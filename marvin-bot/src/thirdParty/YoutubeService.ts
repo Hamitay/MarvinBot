@@ -1,7 +1,6 @@
 import ytpl from 'ytpl';
 import ytdl, { getInfo } from 'ytdl-core';
 import { injectable } from 'tsyringe';
-
 import { SongInfo } from '../song/SongInfo';
 
 const YT_PLAYLIST_URL = '/playlist?list=';
@@ -40,6 +39,11 @@ export default class YoutubeService {
   }
 
   public async getVideoStream(url: string) {
-    return await ytdl(url);
+    return await ytdl(url, { filter: 'audioonly'});
+  }
+
+  public getVideoStreamSync(url: string) {
+    return ytdl(url, {
+    });
   }
 }

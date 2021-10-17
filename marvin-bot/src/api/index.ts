@@ -3,12 +3,14 @@ import { json } from 'body-parser';
 import { injectable } from 'tsyringe';
 import DiscordClient from '../client';
 
+import cors from 'cors';
+
 export interface MessageRequest {
   id: string;
   messageBody: string;
 }
 
-const PORT = process.env.API_PORT || 3000;
+const PORT = 5000;
 
 @injectable()
 export default class MarvinApi {
@@ -20,6 +22,8 @@ export default class MarvinApi {
 
   serve() {
     const app = express();
+    app.use(cors())
+
     app.post('/message', json(), async (req, res) => {
       const message = req.body as MessageRequest;
       try {
@@ -32,6 +36,6 @@ export default class MarvinApi {
       res.send(200);
     });
 
-    app.listen(PORT);
+    app.listen(PORT, () => console.log("Api enabled and listening on port: " + PORT));
   }
 }
