@@ -2,6 +2,7 @@ import { Router } from "express";
 import { json } from 'body-parser';
 import PlaylistService from "./PlaylistService";
 import { NewPlaylistRequest, AddVideoRequest } from "./types";
+import PlaylistNotFoundError from "../errors/PlaylistNotFoundError";
 
 const playlistController = Router();
 
@@ -24,6 +25,20 @@ playlistController.post('/', json(), async (req, res) => {
     }
 });
 
+playlistController.get('/:id', json(), async (req, res) => {
+    const { id } = req.params;
+    try {
+        const playlist = await PlaylistService.getPlaylistById(parseInt(id));
+        return res.send(playlist);
+    } catch (error) {
+        if (error instanceof PlaylistNotFoundError) {
+            return res.sendStatus(404);
+        }
+
+        return res.sendStatus(500);
+    }
+});
+
 playlistController.put('/:id/addVideo', json(), async (req, res) => {
     // TODO add payload validation
     const addVideoRequest = req.body as AddVideoRequest;
@@ -31,14 +46,15 @@ playlistController.put('/:id/addVideo', json(), async (req, res) => {
     const { id } = req.params
 
     try {
-        await PlaylistService.addVideoToPlaylist(parseInt(id), name, url, thumbnailUrl);
+        const video = await PlaylistService.addVideoToPlaylist(parseInt(id), name, url, thumbnailUrl);
+        return res.send(video);
     } catch (error) {
         // TODO better error handling
         console.error(error);
         return res.sendStatus(500);
     }
-
-    return res.sendStatus(201);
 })
+
+
 
 export default playlistController;
