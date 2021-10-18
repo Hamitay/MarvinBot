@@ -1,31 +1,16 @@
 import { withRouter } from "react-router-dom";
 import { RouteComponentProps } from "react-router";
 import { styled } from '@material-ui/styles';
-import { Box } from "@material-ui/core";
 import { LibraryMusic } from "@material-ui/icons";
 import TextDetails from "./TextDetails";
 import DetailButton from "./DetailButton";
-
-
-const PlaylistItemContainer = styled(Box)({
-    width: "18rem",
-    border: "1px",
-    borderStyle: "solid",
-    borderColor: "lightGray",
-    boxShadow: "1px 1px 1px gray",
-    borderRadius: "10px",
-    marginBottom: "1rem",
-    padding: "0.5rem",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-evenly"
-})
-
+import PlaylistItemContainer from "../../ItemContainer";
 
 type PlaylistListItemProps  = RouteComponentProps & {
     name: string,
     id: number,
     key: number,
+    videoAmount: number,
 }
 
 const StyledLibraryMusicIcon = styled(LibraryMusic)({
@@ -33,7 +18,7 @@ const StyledLibraryMusicIcon = styled(LibraryMusic)({
 })
 
 const PlaylistListItem = (props: PlaylistListItemProps) => {
-    const { key, id, name, history } = props;
+    const { key, id, name, videoAmount, history } = props;
 
     const playlistUrl = `/playlist/${id}`; 
     const redirectToDetailsPage = () => {
@@ -43,7 +28,7 @@ const PlaylistListItem = (props: PlaylistListItemProps) => {
     return (
         <PlaylistItemContainer key={key}>
             <StyledLibraryMusicIcon color="action" fontSize="large" />
-            <TextDetails name={name} creator={"admin"} numberOfSongs={10}/>
+            <TextDetails name={name} creator={"admin"} numberOfSongs={videoAmount}/>
             <DetailButton onClick={redirectToDetailsPage}/>
         </PlaylistItemContainer>
     )

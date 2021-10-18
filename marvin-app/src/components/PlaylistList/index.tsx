@@ -4,27 +4,29 @@ import PlaylistItem from "./PlaylistItem"
 import { Box } from "@material-ui/core"
 import NewPlaylistModal from "./NewPlaylistModal"
 import { styled } from "@material-ui/styles"
+import AddNewPlaylistButton from "./AddNewPlaylistButton.tsx"
 
 
 const ListContainer = styled(Box)({
     display: "grid",
     placeItems: "center",
+    marginTop: "4rem",
 })
 
 const PlaylistList = () => {
-    const [users, setUsers] = useState<Playlist[]>([])
+    const [playlists, setPlaylists] = useState<Playlist[]>([])
     const [playlistFormEnabled, setPlaylistFormEnabled] = useState(false)
     useEffect(() => {
         const fetchPlaylists = async () => {
             const fetchedPlaylists = await getAllPlaylists();
-            setUsers(fetchedPlaylists)
+            setPlaylists(fetchedPlaylists)
         }
 
         fetchPlaylists();
     }, [])
 
-    const playlistList = users.map((pl) => (
-        <PlaylistItem name={pl.name} id={pl.id} key={pl.id} />
+    const playlistList = playlists.map((pl) => (
+        <PlaylistItem name={pl.name} id={pl.id} key={pl.id} videoAmount={pl.videos.length}/>
     ))
 
     const handleClickAddNewPlaylist = () => {
@@ -38,12 +40,8 @@ const PlaylistList = () => {
 
     return (
         <ListContainer>
-            <div>
-                {users.length > 0 ? playlistList : (<div>Loading</div>)}
-            </div>
-            <div>
-                <button onClick={handleClickAddNewPlaylist}>New Playlist</button>
-            </div>
+            <AddNewPlaylistButton onClick={handleClickAddNewPlaylist}/>
+            {playlists.length > 0 ? playlistList : (<div>Loading</div>)}
             <NewPlaylistModal onSubmit={closePlaylistForm} open={playlistFormEnabled} handleClose={() => setPlaylistFormEnabled(false)}/>
         </ListContainer>
 
