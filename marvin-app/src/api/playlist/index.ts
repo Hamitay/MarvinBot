@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios"
 
-const API_URL = "http://localhost:5000"
+const API_URL = process.env.API_URL || "http://localhost:5000"
 
 export interface Playlist {
     id: number,
