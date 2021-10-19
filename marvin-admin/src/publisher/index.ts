@@ -42,9 +42,6 @@ const handleEvent = (channel: amqp.Channel) => async (msg: ConsumeMessage | null
         const messageBody = JSON.parse(rawMessage) as MarvinNewVideoEvent;
         console.log('Received message: ')
         console.log(messageBody);
-
-        //Download video
-
         try {
             const video = await VideoService.getVideoById(messageBody.videoId)
             await downloadVideo(video.id, video.name, video.thirdPartyUrl);

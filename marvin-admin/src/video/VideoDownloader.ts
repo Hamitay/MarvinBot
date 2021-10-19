@@ -12,6 +12,8 @@ const getVideoStream = async (url: string) => {
 
 export const downloadVideo = async (videoId: number, name: string, url: string) => {
   await VideoService.updateVideoStatus(videoId, VIDEO_STATUS.DOWNLOADING);
+
+  console.log("Downloading video at url: " + url);
   try {
     const readStream = await getVideoStream(url);
     const writeStream = fs.createWriteStream(`${OUTPUT_PATH}/${name}.mp4`);
