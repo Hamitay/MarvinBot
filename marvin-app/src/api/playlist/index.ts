@@ -41,7 +41,10 @@ export interface AddVideoRequest {
 }
 
 const sanitizeName = (name: string): string => {
-    return name.trim().replace(/[\s]+/g, "_")
+    return name
+        .trim()
+        .replace(/[\s]+/g, "_")
+        .toLowerCase();
 }
 
 const getAllPlaylists = async (): Promise<Playlist[]> => {

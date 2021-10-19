@@ -1,9 +1,7 @@
-import { Box, Button, IconButton, Paper, Typography } from "@material-ui/core";
+import { Box, IconButton, Paper, Typography } from "@material-ui/core";
 import { AddCircle, MusicNote } from "@material-ui/icons";
 import { styled } from "@material-ui/styles";
-import { Fragment } from "react";
 import { Playlist } from "../../api/playlist";
-import VideoList from "../VideoList";
 
 type PlaylistHeaderProps = {
     playlist: Playlist,
@@ -28,10 +26,6 @@ const TypographyContainer = styled(Box)({
 })
 
 const TitleTypography = styled(Typography)({
-})
-
-const DetailsContainer = styled(Box)({
-    marginLeft: '6rem',
 })
 
 const AddVideoButton = styled(IconButton)({
