@@ -13,11 +13,11 @@ const MAX_NAME_SIZE = 30;
 const MAX_CREATOR_SIZE = 10;
 
 const getNumberOfSongsLabel = (numberOfSongs: number) => {
-    if (numberOfSongs == 0) {
+    if (numberOfSongs === 0) {
         return "No songs";
     }
 
-    return numberOfSongs == 1 ? `${numberOfSongs} song` : `${numberOfSongs} songs`
+    return numberOfSongs === 1 ? `${numberOfSongs} song` : `${numberOfSongs} songs`
 }
 
 const TextDetails = (props: { name: string, creator: string, numberOfSongs: number }) => {

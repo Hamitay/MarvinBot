@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { Box, Typography, TextField, Button, Modal } from "@material-ui/core";
 import { useState } from "react";
-import { AddVideoRequest, createPlaylist } from "../../../api/playlist";
+import { AddVideoRequest } from "../../../api/playlist";
 
 const THUMBNAIL_PLACEHOLDER = 'https://via.placeholder.com/170x128?text=VideoThumb'
 
@@ -114,7 +114,7 @@ const NewVideoModal = (props: NewPlaylistModalProps) => {
         <StyledModal open={open} onClose={onClose}>
             <StyledModalContent>
                 <ImageWrapper>
-                    <img src={newVideoThumbnailUrl} height='128rem' />
+                    <img alt={'video-thumbnail'} src={newVideoThumbnailUrl} height='128rem' />
                 </ImageWrapper>
                 <StyledForm>
                     <Typography variant="h6" >Add new Video</Typography>

@@ -1,0 +1,1 @@
+{"version":3,"file":"VideoNotFoundError.js","sourceRoot":"","sources":["../../../src/errors/VideoNotFoundError.ts"],"names":[],"mappings":";;AAAA,MAAM,kBAAmB,SAAQ,KAAK;IAClC,YAAY,EAAU;QAClB,KAAK,CAAC,SAAS,EAAE,YAAY,CAAC,CAAC;QAE/B,MAAM,CAAC,cAAc,CAAC,IAAI,EAAE,kBAAkB,CAAC,SAAS,CAAC,CAAC;IAC9D,CAAC;CACJ;AAED,kBAAe,kBAAkB,CAAC"}

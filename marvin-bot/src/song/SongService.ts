@@ -13,7 +13,7 @@ enum StreamType {
 
 const YOUTUBE_URL = 'youtube.com';
 const SOUNDCLOUD_URL = 'soundcloud.com';
-const PLAYLIST_URL = '/playlists/';
+const PLAYLIST_URL = '/playlist/';
 @injectable()
 export default class SongService {
   #youtubeService: YoutubeService;
@@ -111,7 +111,7 @@ export default class SongService {
       case StreamType.PLAYLIST:
         return url;
       default:
-        throw new Error('Unssuported Stream Type');
+        throw new Error('Unsuported Stream Type');
     }
   }
 

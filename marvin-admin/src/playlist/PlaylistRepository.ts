@@ -36,6 +36,7 @@ const getPlaylistById = async (playlistId: number): Promise<Playlist | null> => 
                     thirdPartyUrl: true,
                     thumbnailUrl: true,
                     status: true,
+                    url: true,
                     id: true,
                 }
             },

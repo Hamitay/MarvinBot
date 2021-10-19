@@ -1,7 +1,10 @@
 import { Playlist, Video } from ".prisma/client";
 import PlaylistNotFoundError from "../errors/PlaylistNotFoundError";
+import { publishMessage } from "../publisher";
 import { VIDEO_STATUS } from "../video/enum";
 import PlaylistRepository from './PlaylistRepository';
+
+const OUTPUT_PATH = process.env.OUTPUT_PATH;
 
 const getPlaylists = async (): Promise<Playlist[]> => {
     return await PlaylistRepository.getPlaylists();
@@ -23,11 +26,14 @@ const getPlaylistById = async (id: number): Promise<Playlist> => {
 
 const addVideoToPlaylist = async (playlistId: number, videoName: string, videoUrl: string, thumbnailUrl: string): Promise<Video> => {
     // TODO Resolve video path and resolve name colision
-    const videoPath = `${'videoFolderPath'}/videoName`;
+    const videoPath = `${OUTPUT_PATH}/${videoName}`;
 
-    return await PlaylistRepository.addVideoToPlaylist(playlistId, videoName, videoUrl, videoPath, VIDEO_STATUS.REQUESTED ,thumbnailUrl);
+    const newVideo = await PlaylistRepository.addVideoToPlaylist(playlistId, videoName, videoUrl, videoPath, VIDEO_STATUS.REQUESTED ,thumbnailUrl);
 
     // TODO publish message to download
+    await publishMessage({ videoId: newVideo.id })
+
+    return newVideo;
 }
 
 export default {

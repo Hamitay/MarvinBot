@@ -41,7 +41,7 @@ const PlaylistList = () => {
     return (
         <ListContainer>
             <AddNewPlaylistButton onClick={handleClickAddNewPlaylist}/>
-            {playlists.length > 0 ? playlistList : (<div>Loading</div>)}
+            {playlists ? playlistList : (<div>Loading</div>)}
             <NewPlaylistModal onSubmit={closePlaylistForm} open={playlistFormEnabled} handleClose={() => setPlaylistFormEnabled(false)}/>
         </ListContainer>
 

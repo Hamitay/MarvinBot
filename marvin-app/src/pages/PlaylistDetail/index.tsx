@@ -1,7 +1,7 @@
 import { Box, styled } from '@material-ui/core';
 import { Fragment, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { AddVideoRequest, addVideoToPlaylist, getPlaylistById, Playlist, Video } from '../../api/playlist';
+import { AddVideoRequest, addVideoToPlaylist, getPlaylistById, Playlist } from '../../api/playlist';
 import PlaylistHeader from '../../components/PlaylistHeader';
 import VideoList from '../../components/VideoList';
 import NewVideoModal from '../../components/VideoList/NewVideoModal';
@@ -35,7 +35,7 @@ const PlaylistDetail = () => {
             }
         }
         fetchPlaylist();
-    }, [])
+    }, [playlistId])
 
     const handleAddVideo = (playlistId: string) => async (videoRequest: AddVideoRequest) => {
         const newVideo = await addVideoToPlaylist(playlistId, videoRequest);

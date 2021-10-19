@@ -40,6 +40,10 @@ export interface AddVideoRequest {
     thumbnailUrl: string,
 }
 
+const sanitizeName = (name: string): string => {
+    return name.trim().replace(/[\s]+/g, "_")
+}
+
 const getAllPlaylists = async (): Promise<Playlist[]> => {
     const response = await axios.get(API_URL + '/playlist')
     return response.data;
@@ -51,12 +55,20 @@ const getPlaylistById = async (id: string): Promise<Playlist> => {
 }
 
 const createPlaylist = async (payload: PlaylistRequest): Promise<Playlist> => {
-    const response = await axios.post<PlaylistRequest, AxiosResponse<Playlist>>(API_URL + '/playlist', payload)
+    const sanitizedPayload = {
+        ...payload,
+        name: sanitizeName(payload.name),
+    }
+    const response = await axios.post<PlaylistRequest, AxiosResponse<Playlist>>(API_URL + '/playlist', sanitizedPayload)
     return response.data;
 }
 
 const addVideoToPlaylist = async (playlistId: string, payload: AddVideoRequest): Promise<Video> => {
-    const response = await axios.put<AddVideoRequest, AxiosResponse<Video>>(`${API_URL}/playlist/${playlistId}/addVideo`, payload)
+    const sanitizedPayload = {
+        ...payload,
+        name: sanitizeName(payload.name),
+    }
+    const response = await axios.put<AddVideoRequest, AxiosResponse<Video>>(`${API_URL}/playlist/${playlistId}/addVideo`, sanitizedPayload)
     return response.data;
 }
 

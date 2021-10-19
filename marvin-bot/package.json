@@ -24,10 +24,12 @@
     },
     "dependencies": {
         "@discordjs/opus": "^0.3.2",
+        "axios": "^0.23.0",
         "cors": "^2.8.5",
         "discord.js": "^12.5.3",
         "express": "^4.17.1",
         "ffmpeg": "0.0.4",
+        "ffmpeg-static": "^4.4.0",
         "fisher-yates": "^1.0.3",
         "fluent-ffmpeg": "^2.1.2",
         "opusscript": "0.0.7",
