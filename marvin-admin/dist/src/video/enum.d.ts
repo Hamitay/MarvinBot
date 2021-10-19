@@ -1,6 +1,0 @@
-export declare enum VIDEO_STATUS {
-    FAILED = "FAILED",
-    REQUESTED = "REQUESTED",
-    DOWNLOADING = "DOWNLOADING",
-    FINISHED = "FINISHED"
-}

@@ -2,17 +2,16 @@ import amqp, { ConsumeMessage } from 'amqplib';
 import { downloadVideo } from '../video/VideoDownloader';
 import VideoService from '../video/VideoService';
 
-const QUEUE_HOST = 'amqp://localhost:5672';
+const QUEUE_HOST = process.env.QUEUE_HOST || 'amqp://localhost:5672';
 
 const QUEUE_NAME = 'MarvinVideoEvents';
-
 
 interface MarvinNewVideoEvent {
     videoId: number,
 }
 
 const connectToChannel = async () => {
-    console.log("Attempting to connect to rabbitMq")
+    console.log("Attempting to connect to rabbitMq in " + QUEUE_HOST)
     const connection = await amqp.connect(QUEUE_HOST)
     console.log("Connected to rabbitMq")
     const channel = await connection.createChannel();

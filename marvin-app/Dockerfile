@@ -8,6 +8,8 @@ COPY tsconfig.json ./
 RUN npm install
 
 COPY . /app
+
+#ENV API_URL=http://marvin.hamitay/api
 RUN npm run build
 
 # Runner stage
