@@ -23,7 +23,6 @@ const connectToChannel = async () => {
 
 export const setUpConsumer = async () => {
     const channel = await connectToChannel();
-
     await channel.consume(QUEUE_NAME, handleEvent(channel), { noAck: false })
 }
 
@@ -50,7 +49,6 @@ const handleEvent = (channel: amqp.Channel) => async (msg: ConsumeMessage | null
         try {
             const video = await VideoService.getVideoById(messageBody.videoId)
             await downloadVideo(video.id, video.name, video.thirdPartyUrl);
-
             // ACK
             channel.ack(msg);
         } catch (error) {

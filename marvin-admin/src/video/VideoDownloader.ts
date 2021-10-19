@@ -11,11 +11,19 @@ const getVideoStream = async (url: string) => {
 }
 
 export const downloadVideo = async (videoId: number, name: string, url: string) => {
-  const readStream = await getVideoStream(url);
-  const writeStream = fs.createWriteStream(`${OUTPUT_PATH}/${name}.mp4`);
+  await VideoService.updateVideoStatus(videoId, VIDEO_STATUS.DOWNLOADING);
+  try {
+    const readStream = await getVideoStream(url);
+    const writeStream = fs.createWriteStream(`${OUTPUT_PATH}/${name}.mp4`);
 
-  console.log("Pipeline started")
-  await pipeline(readStream, writeStream);
-  console.log("Pipeline ended")
-  await VideoService.updateVideoStatus(videoId, VIDEO_STATUS.FINISHED);
+    console.log("Pipeline started")
+    await pipeline(readStream, writeStream);
+    console.log("Pipeline ended")
+    await VideoService.updateVideoStatus(videoId, VIDEO_STATUS.FINISHED);
+    
+  } catch (error) {
+    console.error(error)
+    await VideoService.updateVideoStatus(videoId, VIDEO_STATUS.FAILED);
+  }
+
 }
