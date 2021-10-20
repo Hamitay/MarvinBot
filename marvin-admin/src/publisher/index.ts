@@ -76,6 +76,11 @@ const handleEvent = (channel: amqp.Channel) => async (msg: ConsumeMessage | null
 
             // TO DO improve dead lettering
             const retries = msg.properties.headers[RETRY_AMOUNT_HEADERS];
+
+            if (!retries) {
+                channel.ack(msg)
+            }
+
             if (retries && retries >= MAX_RETRIES_AMOUNT) {
                 console.log(`Maximum amount of retries for ${messageBody.messageId}`);
             } else {
