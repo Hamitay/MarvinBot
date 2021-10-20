@@ -2,7 +2,7 @@ import { injectable } from "tsyringe";
 import axios, { AxiosResponse } from "axios"
 import { Playlist } from "../playlist/Playlist";
 
-const ADMIN_URL = 'http://localhost:5000';
+const ADMIN_URL = 'http://marvin.api.hamitay.com/api';
 
 @injectable()
 export default class AdminClient {

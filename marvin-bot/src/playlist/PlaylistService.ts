@@ -1,9 +1,8 @@
-import fs from 'fs';
 import { injectable } from 'tsyringe';
 import AdminClient from '../admin/AdminClient';
 import { SongInfo } from '../song/SongInfo';
 
-const PLAYLIST_DIR = '../marvin-admin/videoOutput';
+const OUTPUT_PATH = process.env.OUTPUT_PATH;
 
 @injectable()
 export default class PlaylistService {
@@ -55,7 +54,7 @@ export default class PlaylistService {
     const songFiles = playlist.videos;
     console.log(playlist)
     return songFiles.map((songFile) => ({
-      url: songFile.url,
+      url: `${OUTPUT_PATH}/${songFile.url}`,
       title: songFile.name,
     }));
   }

@@ -9,16 +9,17 @@ RUN npm install
 
 COPY . /app
 
-#ENV API_URL=http://marvin.hamitay/api
+ENV API_URL=http://marvin.hamitay.com/api
 RUN npm run build
 
 # Runner stage
 FROM nginx:alpine
-# Set working directory to nginx asset directory
+
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx/nginx_prod.conf /etc/nginx/conf.d/prod.conf
+
 WORKDIR /usr/share/nginx/html
-# Remove default nginx static assets
 RUN rm -rf ./*
-# Copy static assets from builder stage
 COPY --from=builder /app/build .
 
 # Containers run nginx with global directives and daemon off
