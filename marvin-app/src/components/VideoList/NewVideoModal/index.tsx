@@ -72,10 +72,6 @@ const NewVideoModal = (props: NewPlaylistModalProps) => {
         } else {
             setVideoThumbnailUrl(THUMBNAIL_PLACEHOLDER);
         }
-
-        if (!newVideoName || newVideoName === '') {
-            setNewVideoName(value)
-        }
     }
 
     const handleSubmit = async () => {

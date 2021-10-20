@@ -51,8 +51,7 @@ export default class PlaylistService {
 
     const playlist = await this.#adminClient.getPlaylistById(playlistId);
 
-    const songFiles = playlist.videos;
-    console.log(playlist)
+    const songFiles = playlist.videos.filter((video) => video.status === 'FINISHED');
     return songFiles.map((songFile) => ({
       url: `${OUTPUT_PATH}/${songFile.url}`,
       title: songFile.name,

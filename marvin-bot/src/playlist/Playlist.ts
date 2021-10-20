@@ -8,4 +8,5 @@ interface Video {
     name: string,
     url: string,
     id: number,
+    status: string,
 }

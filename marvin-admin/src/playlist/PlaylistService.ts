@@ -1,6 +1,6 @@
-import { Playlist, Video } from ".prisma/client";
+import { Playlist, prisma, Video } from ".prisma/client";
 import PlaylistNotFoundError from "../errors/PlaylistNotFoundError";
-import { publishMessage } from "../publisher";
+import { publishNewVideoMarvinEvent } from "../publisher";
 import { VIDEO_STATUS } from "../video/enum";
 import PlaylistRepository from './PlaylistRepository';
 
@@ -23,11 +23,15 @@ const getPlaylistById = async (id: number): Promise<Playlist> => {
 }
 
 const addVideoToPlaylist = async (playlistId: number, videoName: string, videoUrl: string, thumbnailUrl: string): Promise<Video> => {
-    const newVideo = await PlaylistRepository.addVideoToPlaylist(playlistId, videoName, videoUrl, `${videoName}.mp4`, VIDEO_STATUS.REQUESTED ,thumbnailUrl);
+    const path = `${encodeURIComponent(videoName)}.mp4`;
+    const newVideo = await PlaylistRepository.addVideoToPlaylist(playlistId, 
+        videoName, 
+        videoUrl, 
+        path, 
+        VIDEO_STATUS.REQUESTED,
+        thumbnailUrl);
 
-    // TODO publish message to download
-    await publishMessage({ videoId: newVideo.id })
-
+    await publishNewVideoMarvinEvent(newVideo.id);
     return newVideo;
 }
 
