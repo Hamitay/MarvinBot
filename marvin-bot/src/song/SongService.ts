@@ -116,16 +116,16 @@ export default class SongService {
   }
 
   public getStreamType(url: string): StreamType {
+    if (url.includes(PLAYLIST_URL)) {
+      return StreamType.PLAYLIST;
+    }
+    
     if (url.includes(YOUTUBE_URL)) {
       return StreamType.YOUTUBE;
     }
 
     if (url.includes(SOUNDCLOUD_URL)) {
       return StreamType.SOUNDCLOUD;
-    }
-
-    if (url.includes(PLAYLIST_URL)) {
-      return StreamType.PLAYLIST;
     }
 
     throw new Error('Invalid Stream type');

@@ -50,7 +50,6 @@ export default class PlaylistCommand extends Command {
     let songs: SongInfo[] = []
     try {
       songs = await this.#playlistService.getPlaylistSongs(playlistName);
-      console.log(songs)
     } catch (error) {
       console.error(error)
       return await this.respond(`Error playing unknown playlist ${playlistName}`);
