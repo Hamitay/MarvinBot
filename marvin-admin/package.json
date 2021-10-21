@@ -1,0 +1,35 @@
+{
+    "name": "marvin-admin",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "ts-node src/index.ts --stack-size=10",
+        "test": "jest",
+        "tsc": "tsc"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/cors": "^2.8.12",
+        "@types/express": "^4.17.13",
+        "@types/jest": "^27.0.2",
+        "@types/node": "^16.11.1",
+        "jest": "^27.3.1",
+        "nodemon": "^2.0.13",
+        "prisma": "^3.2.1",
+        "ts-jest": "^27.0.7",
+        "ts-node": "^10.3.0",
+        "typescript": "^4.4.4"
+    },
+    "dependencies": {
+        "@prisma/client": "^3.2.1",
+        "@types/amqplib": "^0.8.2",
+        "amqplib": "^0.8.0",
+        "cors": "^2.8.5",
+        "dotenv": "^10.0.0",
+        "express": "^4.17.1",
+        "ytdl-core": "^4.9.1"
+    }
+}

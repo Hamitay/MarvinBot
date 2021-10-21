@@ -6,13 +6,43 @@ on:
     branches: [ master ]
 
 jobs:
-  test:
+  test-bot:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
     - name: Checkout code
       uses: actions/setup-node@v1
       with:
-        node-version: '12.x'
-    - run: npm install
-    - run: npm test
+        node-version: '16.x'
+    - name: Install dependencies and test
+      working-directory: ./marvin-bot
+      run: |
+        npm install
+        npm test
+  test-app:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Checkout code
+      uses: actions/setup-node@v1
+      with:
+        node-version: '16.x'
+    - name: Install dependencies and test
+      working-directory: ./marvin-app
+      run: |
+        npm install
+        export CI=true && npm run test
+  test-admin:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Checkout code
+      uses: actions/setup-node@v1
+      with:
+        node-version: '16.x'
+    - name: Install dependencies and test
+      working-directory: ./marvin-admin
+      run: |
+        npm install
+        npx prisma generate
+        export CI=true && npm run test
