@@ -3,14 +3,8 @@ import { json } from 'body-parser';
 import PlaylistService from "./PlaylistService";
 import { NewPlaylistRequest, AddVideoRequest } from "./types";
 import PlaylistNotFoundError from "../errors/PlaylistNotFoundError";
-import { publishNewVideoMarvinEvent } from "../publisher";
 
 const playlistController = Router();
-
-playlistController.get('/test', async (req, res) => {
-    await publishNewVideoMarvinEvent(1);
-    res.send(200)
-})
 
 playlistController.get('/', async (req, res) => {
     const playlists = await PlaylistService.getPlaylists();

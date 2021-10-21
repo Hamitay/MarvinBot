@@ -12,7 +12,6 @@ const getVideoStream = async (url: string) => {
 
 export const downloadVideo = async (videoId: number, name: string, url: string, messageId: string) => {
   
-
   console.log(`Downloading video at url: ${url}, messageId ${messageId}`);
   try {
     await VideoService.updateVideoStatus(videoId, VIDEO_STATUS.DOWNLOADING);

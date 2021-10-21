@@ -1,4 +1,4 @@
-import { Playlist, prisma, Video } from ".prisma/client";
+import { Playlist, Video } from ".prisma/client";
 import PlaylistNotFoundError from "../errors/PlaylistNotFoundError";
 import { publishNewVideoMarvinEvent } from "../publisher";
 import { VIDEO_STATUS } from "../video/enum";
