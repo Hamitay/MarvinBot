@@ -14,7 +14,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '16.x'
-    - run: cd marvin-bot
-    - run: ls
-    - run: npm install
-    - run: npm test
+    - name: Install dependencies and test
+      working-directory: ./marvin-bot
+      -run: |
+        npm install
+        npm test
