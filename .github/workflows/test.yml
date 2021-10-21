@@ -15,5 +15,6 @@ jobs:
       with:
         node-version: '16.x'
     - run: cd marvin-bot
+    - run: ls
     - run: npm install
     - run: npm test

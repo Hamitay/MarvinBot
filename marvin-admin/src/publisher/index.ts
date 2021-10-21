@@ -77,7 +77,7 @@ const handleEvent = (channel: amqp.Channel) => async (msg: ConsumeMessage | null
             // TO DO improve dead lettering
             const retries = msg.properties.headers[RETRY_AMOUNT_HEADERS];
 
-            if (!retries) {
+            if (retries === undefined) {
                 channel.ack(msg)
             }
 
