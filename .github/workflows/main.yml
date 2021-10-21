@@ -53,9 +53,9 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Publish to Registry
-      working-directory: ./marvin-bot
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
+        workdir: ./marvin-bot
         name: henriqueamitay/marvin
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
@@ -66,9 +66,9 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Publish to Registry
-      working-directory: ./marvin-app
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
+        workdir: ./marvin-app
         name: henriqueamitay/marvin-app
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
@@ -79,9 +79,9 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Publish to Registry
-      working-directory: ./marvin-admin
       uses: elgohr/Publish-Docker-Github-Action@master
       with:
+        workdir: ./marvin-admin
         name: henriqueamitay/marvin-admin
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
