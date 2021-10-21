@@ -16,6 +16,6 @@ jobs:
         node-version: '16.x'
     - name: Install dependencies and test
       working-directory: ./marvin-bot
-      -run: |
+      - run: |
         npm install
         npm test
