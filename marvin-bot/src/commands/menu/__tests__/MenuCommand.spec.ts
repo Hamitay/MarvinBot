@@ -26,7 +26,7 @@ describe("MenuCommand", () => {
   });
 
   it("should respond with a string containing all playlist folders", async () => {
-    const playlists = await menuCommand.execute({} as Message, [""]);
+    const playlists = await menuCommand.execute();
 
     const expectedResult = "-> dir1\n-> dir2\n-> dir3\n";
 
