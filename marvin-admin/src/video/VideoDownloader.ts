@@ -7,7 +7,7 @@ import { VIDEO_STATUS } from "./enum";
 const OUTPUT_PATH = process.env.OUTPUT_PATH;
 
 const getVideoStream = async (url: string) => {
-  return await ytdl(url, { filter: 'audioonly' });
+  return await ytdl(url, { filter: "audioonly" });
 }
 
 export const downloadVideo = async (videoId: number, name: string, url: string, messageId: string) => {

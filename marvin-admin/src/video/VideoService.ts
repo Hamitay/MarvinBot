@@ -17,7 +17,7 @@ const updateVideoStatus = async (videoId: number, status: VIDEO_STATUS): Promise
     try {
         await VideoRepository.updateVideoStatus(videoId, status);
     } catch(error) {
-        console.error('error')
+        console.error("error")
     }
 }
 

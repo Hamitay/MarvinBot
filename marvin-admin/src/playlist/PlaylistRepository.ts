@@ -1,5 +1,5 @@
-import { PrismaClient, Playlist, Video } from '@prisma/client';
-import { VIDEO_STATUS } from '../video/enum';
+import { PrismaClient, Playlist, Video } from "@prisma/client";
+import { VIDEO_STATUS } from "../video/enum";
 
 const client = new PrismaClient();
 

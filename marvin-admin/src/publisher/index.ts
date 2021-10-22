@@ -1,13 +1,13 @@
-import amqp, { ConsumeMessage } from 'amqplib';
-import { downloadVideo } from '../video/VideoDownloader';
-import VideoService from '../video/VideoService';
-import crypto from 'crypto';
+import amqp, { ConsumeMessage } from "amqplib";
+import { downloadVideo } from "../video/VideoDownloader";
+import VideoService from "../video/VideoService";
+import crypto from "crypto";
 
-const QUEUE_HOST = process.env.QUEUE_HOST || 'amqp://localhost:5672';
+const QUEUE_HOST = process.env.QUEUE_HOST || "amqp://localhost:5672";
 
-const QUEUE_NAME = 'MarvinVideoEvents';
+const QUEUE_NAME = "MarvinVideoEvents";
 
-const RETRY_AMOUNT_HEADERS = 'x-retry'
+const RETRY_AMOUNT_HEADERS = "x-retry"
 const MAX_RETRIES_AMOUNT = 10;
 interface MarvinNewVideoEvent {
     videoId: number,
@@ -35,7 +35,7 @@ export const publishNewVideoMarvinEvent = (videoId: number) => {
 }
 
 const buildMessage = (videoId: number): MarvinNewVideoEvent => {
-    const messageId = crypto.randomBytes(20).toString('hex');
+    const messageId = crypto.randomBytes(20).toString("hex");
     return {
         videoId,
         messageId

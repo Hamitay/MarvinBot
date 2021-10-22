@@ -2,7 +2,7 @@ import { Playlist, Video } from ".prisma/client";
 import PlaylistNotFoundError from "../errors/PlaylistNotFoundError";
 import { publishNewVideoMarvinEvent } from "../publisher";
 import { VIDEO_STATUS } from "../video/enum";
-import PlaylistRepository from './PlaylistRepository';
+import PlaylistRepository from "./PlaylistRepository";
 
 const getPlaylists = async (): Promise<Playlist[]> => {
     return await PlaylistRepository.getPlaylists();
