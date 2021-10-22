@@ -1,5 +1,5 @@
-import { Client, Message, TextChannel } from 'discord.js';
-import { singleton } from 'tsyringe';
+import { Client, Message, TextChannel } from "discord.js";
+import { singleton } from "tsyringe";
 
 const token = process.env.DISCORD_TOKEN;
 
@@ -12,20 +12,20 @@ export default class DiscordClient {
   }
 
   public init(messageHandler: (arg0: Message) => void): Promise<string> {
-    this._client.once('ready', () => {
-      console.log('Im ready');
+    this._client.once("ready", () => {
+      console.log("Im ready");
     });
 
-    this._client.once('reconnecting', () => {
-      console.log('Im trying to reconnect');
+    this._client.once("reconnecting", () => {
+      console.log("Im trying to reconnect");
     });
 
-    this._client.once('disconnect', () => {
-      console.log('Im disconnected');
+    this._client.once("disconnect", () => {
+      console.log("Im disconnected");
     });
 
     // Register commands here
-    this._client.on('message', messageHandler);
+    this._client.on("message", messageHandler);
 
     return this._client.login(token);
   }
@@ -40,10 +40,10 @@ export default class DiscordClient {
         return await channel.send(messageBody);
       } catch (e) {
         console.error(e);
-        throw new Error('Error sending message');
+        throw new Error("Error sending message");
       }
     } else {
-      throw new Error('Invalid channel id');
+      throw new Error("Invalid channel id");
     }
   }
 }

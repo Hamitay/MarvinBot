@@ -1,7 +1,7 @@
-import { Message, VoiceChannel } from 'discord.js';
-import { singleton } from 'tsyringe';
-import { SongInfo } from '../song/SongInfo';
-import ChannelQueue from './ChannelQueue';
+import { Message, VoiceChannel } from "discord.js";
+import { singleton } from "tsyringe";
+import { SongInfo } from "../song/SongInfo";
+import ChannelQueue from "./ChannelQueue";
 
 const DEFAULT_VOLUME = 0.05;
 @singleton()
@@ -23,7 +23,7 @@ export default class QueueService {
   public addSongsToQueue(messageContext: Message, songs: SongInfo[]) {
     const guildId = messageContext.guild?.id;
     if (!guildId) {
-      throw new Error('Guild id not provided');
+      throw new Error("Guild id not provided");
     }
 
     const queue = this.getQueue(guildId);
@@ -48,13 +48,13 @@ export default class QueueService {
   public async connectQueueToChannel(messageContext: Message, voiceChannel: VoiceChannel): Promise<ChannelQueue> {
     const guildId = messageContext.guild?.id;
     if (!guildId) {
-      throw new Error('Guild id not provided');
+      throw new Error("Guild id not provided");
     }
 
     const queue = this.getQueue(guildId);
 
     if (!queue) {
-      throw new Error('Undefined guild');
+      throw new Error("Undefined guild");
     }
 
     queue.connection = await voiceChannel.join();

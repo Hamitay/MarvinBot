@@ -1,16 +1,17 @@
-import { Message } from 'discord.js';
-import { injectable } from 'tsyringe';
-import PlaylistService from '../../playlist/PlaylistService';
-import { SongInfo } from '../../song/SongInfo';
-import SongService from '../../song/SongService';
-import { Command } from '../command';
-import commonMessages from '../commonMessages';
-import messages from './messages';
+import { Message } from "discord.js";
+import { injectable } from "tsyringe";
+import PlaylistService from "../../playlist/PlaylistService";
+import { SongInfo } from "../../song/SongInfo";
+import SongService from "../../song/SongService";
+import { Command } from "../command";
+import commonMessages from "../commonMessages";
+import messages from "./messages";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const shuffle = require("fisher-yates");
 
-const shuffle = require('fisher-yates');
-const DIRECTIVE = 'playlist';
-const SHUFFLE_DIRECTIVE = 'shuffle';
+const DIRECTIVE = "playlist";
+const SHUFFLE_DIRECTIVE = "shuffle";
 
 @injectable()
 export default class PlaylistCommand extends Command {

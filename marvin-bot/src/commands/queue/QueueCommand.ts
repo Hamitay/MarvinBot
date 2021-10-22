@@ -1,11 +1,11 @@
-import { Message } from 'discord.js';
-import { injectable } from 'tsyringe';
-import QueueService from '../../queue';
-import { Command } from '../command';
-import messages from './messages';
-import commonMessages from '../commonMessages';
+import { Message } from "discord.js";
+import { injectable } from "tsyringe";
+import QueueService from "../../queue";
+import { Command } from "../command";
+import messages from "./messages";
+import commonMessages from "../commonMessages";
 
-const DIRECTIVE = 'queue';
+const DIRECTIVE = "queue";
 
 @injectable()
 export default class QueueCommand extends Command {
@@ -21,10 +21,10 @@ export default class QueueCommand extends Command {
   }
 
   getHelpMessage(): string {
-    return 'Prints the current queue';
+    return "Prints the current queue";
   }
 
-  async execute(message: Message, args: string[]): Promise<string> {
+  async execute(message: Message): Promise<string> {
     const guildId = message.guild?.id;
 
     if (!guildId) {
@@ -38,7 +38,7 @@ export default class QueueCommand extends Command {
       return this.respond(messages.EMPTY_LIST);
     }
 
-    const songList = songs.map((song) => `- ${song.title}\n`).join('')
+    const songList = songs.map((song) => `- ${song.title}\n`).join("")
 
     return this.respond(songList);
   }

@@ -1,11 +1,11 @@
-import { Message } from 'discord.js';
-import { injectable } from 'tsyringe';
-import QueueService from '../../queue';
-import { Command } from '../command';
-import messages from './messages';
-import commonMessages from '../commonMessages';
+import { Message } from "discord.js";
+import { injectable } from "tsyringe";
+import QueueService from "../../queue";
+import { Command } from "../command";
+import messages from "./messages";
+import commonMessages from "../commonMessages";
 
-const DIRECTIVE = 'stop';
+const DIRECTIVE = "stop";
 
 @injectable()
 export default class StopCommand extends Command {
@@ -21,10 +21,10 @@ export default class StopCommand extends Command {
   }
 
   getHelpMessage(): string {
-    return 'Stops the current song and clears the queue.';
+    return "Stops the current song and clears the queue.";
   }
 
-  async execute(message: Message, args: string[]): Promise<string> {
+  async execute(message: Message): Promise<string> {
     const guildId = message.guild?.id;
 
     if (!guildId) {

@@ -1,10 +1,10 @@
-import { Message } from 'discord.js';
-import { injectable } from 'tsyringe';
-import { Command } from '../command';
-import commonMessages from '../commonMessages';
-import messages from './messages';
+import { Message } from "discord.js";
+import { injectable } from "tsyringe";
+import { Command } from "../command";
+import commonMessages from "../commonMessages";
+import messages from "./messages";
 
-const DIRECTIVE = 'bind';
+const DIRECTIVE = "bind";
 
 @injectable()
 export default class BindCommand extends Command {
@@ -13,10 +13,10 @@ export default class BindCommand extends Command {
   }
 
   getHelpMessage(): string {
-    return 'Returns the chat id for hackerman purposes.';
+    return "Returns the chat id for hackerman purposes.";
   }
 
-  async execute(message: Message, args: string[]): Promise<string> {
+  async execute(message: Message): Promise<string> {
     const voiceChannel = message.member?.voice.channel;
 
     if (!voiceChannel) {

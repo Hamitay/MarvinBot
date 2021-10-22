@@ -1,7 +1,7 @@
-import 'reflect-metadata';
-import { container } from 'tsyringe';
-import MarvinBot from './bot';
-import MarvinApi from './api';
+import "reflect-metadata";
+import { container } from "tsyringe";
+import MarvinBot from "./bot";
+import MarvinApi from "./api";
 
 const { API_ENABLED } = process.env;
 

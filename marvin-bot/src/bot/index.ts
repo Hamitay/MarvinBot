@@ -1,10 +1,10 @@
-import { Message } from 'discord.js';
-import { injectable } from 'tsyringe';
-import DiscordClient from '../client';
-import Commands from '../commands';
+import { Message } from "discord.js";
+import { injectable } from "tsyringe";
+import DiscordClient from "../client";
+import Commands from "../commands";
 
-const alias = '_m';
-const prefix = 'marvin';
+const alias = "_m";
+const prefix = "marvin";
 @injectable()
 export default class MarvinBot {
   _commands: Commands;
@@ -16,7 +16,7 @@ export default class MarvinBot {
     this._client = discordClient;
   }
 
-  private _messageHandler = async (message: Message): Promise<any> => {
+  private _messageHandler = async (message: Message): Promise<Message | undefined> => {
     const { content } = message;
 
     if (content.startsWith(alias) || content.startsWith(prefix)) {
@@ -29,8 +29,8 @@ export default class MarvinBot {
   };
 
   public sanitizeInput(input: string) {
-    const args = input.split(' ')
-      .filter((element) => element !== '')
+    const args = input.split(" ")
+      .filter((element) => element !== "")
       .splice(1);
     return {
       directive: args[0],

@@ -1,16 +1,16 @@
-import { Message } from 'discord.js';
-import { injectable } from 'tsyringe';
-import { Command } from './command';
-import PlayCommand from './play/PlayCommand';
-import MenuCommand from './menu/MenuCommand';
-import StopCommand from './stop/StopCommand';
-import QueueCommand from './queue/QueueCommand';
-import VolumeCommand from './volume/VolumeCommand';
-import HelpCommand from './help/HelpCommand';
-import SkipCommand from './skip/SkipCommand';
-import PlaylistCommand from './playlist/PlaylistCommand';
-import BindCommand from './bind/BindCommand';
-import commonMessages from './commonMessages';
+import { Message } from "discord.js";
+import { injectable } from "tsyringe";
+import { Command } from "./command";
+import PlayCommand from "./play/PlayCommand";
+import MenuCommand from "./menu/MenuCommand";
+import StopCommand from "./stop/StopCommand";
+import QueueCommand from "./queue/QueueCommand";
+import VolumeCommand from "./volume/VolumeCommand";
+import HelpCommand from "./help/HelpCommand";
+import SkipCommand from "./skip/SkipCommand";
+import PlaylistCommand from "./playlist/PlaylistCommand";
+import BindCommand from "./bind/BindCommand";
+import commonMessages from "./commonMessages";
 @injectable()
 export default class Commands {
   #commandMap: Map<string, Command>;

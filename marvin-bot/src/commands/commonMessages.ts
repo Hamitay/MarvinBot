@@ -6,7 +6,7 @@ const messages = {
   UNKNOWN_ERROR: (error: string) =>
     `Unsurprisingly there has been an error: ${error}`,
   ASK_FOR_HELP_MESSAGE:
-    'Well it appears you are speaking gibberish. I suppose I could **help** you if you ask nicely.',
+    "Well it appears you are speaking gibberish. I suppose I could **help** you if you ask nicely.",
   NO_GUILD_ID_ERROR:
     "I can't seem to find your guild id. Something terrible has happened and this is probably the developer fault",
 } as const;

@@ -1,9 +1,10 @@
-import { Message, VoiceChannel } from 'discord.js';
-import { injectable } from 'tsyringe';
-import QueueService from '../queue';
-import ChannelQueue from '../queue/ChannelQueue';
-import YoutubeService from '../thirdParty/YoutubeService';
-import { SongInfo } from './SongInfo';
+import { Message, VoiceChannel } from "discord.js";
+import internal from "stream";
+import { injectable } from "tsyringe";
+import QueueService from "../queue";
+import ChannelQueue from "../queue/ChannelQueue";
+import YoutubeService from "../thirdParty/YoutubeService";
+import { SongInfo } from "./SongInfo";
 
 enum StreamType {
   YOUTUBE,
@@ -11,9 +12,9 @@ enum StreamType {
   PLAYLIST
 }
 
-const YOUTUBE_URL = 'youtube.com';
-const SOUNDCLOUD_URL = 'soundcloud.com';
-const PLAYLIST_URL = '/playlist/';
+const YOUTUBE_URL = "youtube.com";
+const SOUNDCLOUD_URL = "soundcloud.com";
+const PLAYLIST_URL = "/playlist/";
 @injectable()
 export default class SongService {
   #youtubeService: YoutubeService;
@@ -48,7 +49,7 @@ export default class SongService {
 
       return songs;
     } else {
-      throw new Error('No guild id');
+      throw new Error("No guild id");
     }
   }
 
@@ -75,7 +76,7 @@ export default class SongService {
 
       return songs;
     } else {
-      throw new Error('No guild id');
+      throw new Error("No guild id");
     }
   }
 
@@ -89,12 +90,12 @@ export default class SongService {
     const stream = await this.getSongStream(songs[0].url);
 
     const dispatcher = queue.connection
-      ?.play(stream, { type: 'unknown' })
-      .on('finish', () => {
+      ?.play(stream, { type: "unknown" })
+      .on("finish", () => {
         queue.songs?.shift();
         this.execute(queue);
       })
-      .on('error', (err) => {
+      .on("error", (err) => {
         console.error(err);
         this.#queueService.deleteQueue(queue);
       });
@@ -102,7 +103,7 @@ export default class SongService {
     dispatcher?.setVolume(queue.volume);
   }
 
-  public async getSongStream(url: string): Promise<any> {
+  public async getSongStream(url: string): Promise<internal.Readable | string> {
     const streamType = this.getStreamType(url);
 
     switch (streamType) {
@@ -111,7 +112,7 @@ export default class SongService {
       case StreamType.PLAYLIST:
         return url;
       default:
-        throw new Error('Unsuported Stream Type');
+        throw new Error("Unsuported Stream Type");
     }
   }
 
@@ -128,6 +129,6 @@ export default class SongService {
       return StreamType.SOUNDCLOUD;
     }
 
-    throw new Error('Invalid Stream type');
+    throw new Error("Invalid Stream type");
   }
 }

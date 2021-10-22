@@ -1,11 +1,11 @@
-import { Message } from 'discord.js';
-import { injectable } from 'tsyringe';
-import QueueService from '../../queue';
-import { Command } from '../command';
-import commonMessages from '../commonMessages';
-import messages from './messages';
+import { Message } from "discord.js";
+import { injectable } from "tsyringe";
+import QueueService from "../../queue";
+import { Command } from "../command";
+import commonMessages from "../commonMessages";
+import messages from "./messages";
 
-const DIRECTIVE = 'skip';
+const DIRECTIVE = "skip";
 
 @injectable()
 export default class SkipCommand extends Command {

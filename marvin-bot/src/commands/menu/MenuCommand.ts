@@ -1,9 +1,8 @@
-import { Message } from 'discord.js';
-import { injectable } from 'tsyringe';
-import { Command } from '../command';
-import PlaylistService from '../../playlist/PlaylistService';
+import { injectable } from "tsyringe";
+import { Command } from "../command";
+import PlaylistService from "../../playlist/PlaylistService";
 
-const DIRECTIVE = 'menu';
+const DIRECTIVE = "menu";
 
 @injectable()
 export default class MenuCommand extends Command {
@@ -19,11 +18,11 @@ export default class MenuCommand extends Command {
   }
 
   getHelpMessage(): string {
-    return 'Prints the available playlists';
+    return "Prints the available playlists";
   }
 
-  async execute(message: Message, args: string[]): Promise<string> {
-    let playlistResponse = '';
+  async execute(): Promise<string> {
+    let playlistResponse = "";
 
     try {
       const playlistMap = await this.#playlistService.getAllPlaylists();

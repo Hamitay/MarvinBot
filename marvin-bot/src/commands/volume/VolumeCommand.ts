@@ -1,11 +1,11 @@
-import { Message } from 'discord.js';
-import { injectable } from 'tsyringe';
-import QueueService from '../../queue';
-import { Command } from '../command';
-import messages from './messages';
-import commonMessages from '../commonMessages';
+import { Message } from "discord.js";
+import { injectable } from "tsyringe";
+import QueueService from "../../queue";
+import { Command } from "../command";
+import messages from "./messages";
+import commonMessages from "../commonMessages";
 
-const DIRECTIVE = 'volume';
+const DIRECTIVE = "volume";
 
 @injectable()
 export default class VolumeCommand extends Command {
@@ -21,7 +21,7 @@ export default class VolumeCommand extends Command {
   }
 
   getHelpMessage(): string {
-    return 'Changes the volume of the stream between 0% and 100%';
+    return "Changes the volume of the stream between 0% and 100%";
   }
 
   normalizeVolume(volume: number): number {

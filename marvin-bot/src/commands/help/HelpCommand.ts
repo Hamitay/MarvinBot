@@ -1,11 +1,12 @@
-import { Message } from 'discord.js';
-import { Command } from '../command';
-import commonMessages from '../commonMessages';
+import { Message } from "discord.js";
+import { Command } from "../command";
+import commonMessages from "../commonMessages";
 
 // Requiring outside root-dir
-const pjson = require('../../../package.json');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const pjson = require("../../../package.json");
 
-const DIRECTIVE = 'help';
+const DIRECTIVE = "help";
 
 export default class HelpCommand extends Command {
   #commandList: Command[];
@@ -20,11 +21,11 @@ export default class HelpCommand extends Command {
   }
 
   getHelpMessage(): string {
-    return 'Gives all the possible commands. But you probably already know this.';
+    return "Gives all the possible commands. But you probably already know this.";
   }
 
   getHelpHeader(): string {
-    return 'Marvin Bot version: ' + pjson.version + '\n';
+    return "Marvin Bot version: " + pjson.version + "\n";
   }
 
   buildHelpResponse(): string {
@@ -33,12 +34,12 @@ export default class HelpCommand extends Command {
         (command) =>
           `-> **${command?.getDirective()}**: ${command?.getHelpMessage()}`
       )
-      .join('\n\n');
+      .join("\n\n");
 
     return this.getHelpHeader() + helpMessage;
   }
 
-  async execute(message: Message, args: string[]): Promise<string> {
+  async execute(message: Message): Promise<string> {
     const guildId = message.guild?.id;
 
     if (!guildId) {

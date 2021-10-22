@@ -1,6 +1,6 @@
-import { injectable } from 'tsyringe';
-import AdminClient from '../admin/AdminClient';
-import { SongInfo } from '../song/SongInfo';
+import { injectable } from "tsyringe";
+import AdminClient from "../admin/AdminClient";
+import { SongInfo } from "../song/SongInfo";
 
 const OUTPUT_PATH = process.env.OUTPUT_PATH;
 
@@ -25,7 +25,7 @@ export default class PlaylistService {
       );
     } catch (err) {
       console.error(err);
-      throw new Error('No such file or directory');
+      throw new Error("No such file or directory");
     }
   }
 
@@ -51,7 +51,7 @@ export default class PlaylistService {
 
     const playlist = await this.#adminClient.getPlaylistById(playlistId);
 
-    const songFiles = playlist.videos.filter((video) => video.status === 'FINISHED');
+    const songFiles = playlist.videos.filter((video) => video.status === "FINISHED");
     return songFiles.map((songFile) => ({
       url: `${OUTPUT_PATH}/${songFile.url}`,
       title: songFile.name,

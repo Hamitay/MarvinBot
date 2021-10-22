@@ -1,11 +1,11 @@
-import { Message } from 'discord.js';
-import { injectable } from 'tsyringe';
-import SongService from '../../song/SongService';
-import { Command } from '../command';
-import messages from './messages';
-import commonMessages from '../commonMessages';
+import { Message } from "discord.js";
+import { injectable } from "tsyringe";
+import SongService from "../../song/SongService";
+import { Command } from "../command";
+import messages from "./messages";
+import commonMessages from "../commonMessages";
 
-const DIRECTIVE = 'play';
+const DIRECTIVE = "play";
 
 @injectable()
 export default class PlayCommand extends Command {
@@ -21,7 +21,7 @@ export default class PlayCommand extends Command {
   }
 
   getHelpMessage(): string {
-    return 'Plays a song from a youtube or soundcloud link or puts it at the bottom of the queue.';
+    return "Plays a song from a youtube or soundcloud link or puts it at the bottom of the queue.";
   }
 
   async execute(message: Message, args: string[]): Promise<string> {

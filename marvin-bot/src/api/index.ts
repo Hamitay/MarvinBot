@@ -1,9 +1,9 @@
-import express from 'express';
-import { json } from 'body-parser';
-import { injectable } from 'tsyringe';
-import DiscordClient from '../client';
+import express from "express";
+import { json } from "body-parser";
+import { injectable } from "tsyringe";
+import DiscordClient from "../client";
 
-import cors from 'cors';
+import cors from "cors";
 
 export interface MessageRequest {
   id: string;
@@ -24,7 +24,7 @@ export default class MarvinApi {
     const app = express();
     app.use(cors())
 
-    app.post('/message', json(), async (req, res) => {
+    app.post("/message", json(), async (req, res) => {
       const message = req.body as MessageRequest;
       try {
         await this.#discordClient.postMessage(message.id, message.messageBody);
