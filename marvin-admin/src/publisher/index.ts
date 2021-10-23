@@ -16,7 +16,7 @@ interface MarvinNewVideoEvent {
 
 const connectToChannel = async () => {
     console.log("Attempting to connect to rabbitMq in " + QUEUE_HOST)
-    const connection = await amqp.connect({ hostname: "localhost", port: 5672, heartbeat: 20})
+    const connection = await amqp.connect({ hostname: QUEUE_HOST, port: 5672, heartbeat: 20})
     console.log("Connected to rabbitMq")
     const channel = await connection.createChannel();
     await channel.assertQueue(QUEUE_NAME, { durable: false })
