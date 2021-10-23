@@ -1,5 +1,5 @@
 
-![alt text](https://vignette.wikia.nocookie.net/hitchhikers/images/a/a0/Marvinrobot.jpg/revision/latest/top-crop/width/360/height/450?cb=20181116220504)
+![Marvin](https://vignette.wikia.nocookie.net/hitchhikers/images/a/a0/Marvinrobot.jpg/revision/latest/top-crop/width/360/height/450?cb=20181116220504)
 
 > There's only one life-form as intelligent as me within thirty parsecs of here and that's me.
 
@@ -8,16 +8,29 @@
 
 Marvin is a simple music bot for Discord made with Discord.js.
 
-As of today it can play songs from youtube and also play songs from the filesystem.
+It allows the users to play songs from both a third party service and also from the filesystem.
 
+It alsos allows users to create and manage their playlists with a simple and friendly user interface.
+
+## Current Architecture
+
+Marvin is, as of today, running in three different containers:
+* `marvin`: the bot itself
+* `marvin_app`: a nginx container that serves the static React files and serves as the reverse proxy to api calls sent to `marvin_admin`
+* `marvin_admin`: a express service that queries and updates a relational database and also downloads songs from a third party service to the filesytem
+
+
+
+![Marvin](docs/images/marvinArchitecture.png)
+
+<!-- 
 ## Running Marvin
 
 ### Requirements
 1. Discord Bot [Token](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)
-2. Soundcloud [Client Id](https://github.com/zackradisic/node-soundcloud-downloader#client-id)
-3. Nodejs v12.0.0
+2. Nodejs v12.0.0
 
-Both the Discord token and soundcloud client id should be exported as environment variables:
+The Discord token should be exported as a environment variable or inside a `.env:
 
 ```
 export DISCORD_TOKEN=<discord_token>
@@ -72,4 +85,4 @@ docker run -d --name marvin -v <your song directory>:/app/playlists \
 -e DISCORD_TOKEN=$DISCORD_TOKEN \
 -e SOUNDCLOUD_CLIENT_ID=$SOUNDCLOUD_CLIENT_ID \
 henriqueamitay/marvin:latest
-```
+``` -->
