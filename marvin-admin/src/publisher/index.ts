@@ -3,7 +3,7 @@ import { downloadVideo } from "../video/VideoDownloader";
 import VideoService from "../video/VideoService";
 import crypto from "crypto";
 
-const QUEUE_HOST = process.env.QUEUE_HOST || "amqp://localhost:5672";
+const QUEUE_HOST = process.env.QUEUE_HOST || "localhost";
 
 const QUEUE_NAME = "MarvinVideoEvents";
 
@@ -16,7 +16,7 @@ interface MarvinNewVideoEvent {
 
 const connectToChannel = async () => {
     console.log("Attempting to connect to rabbitMq in " + QUEUE_HOST)
-    const connection = await amqp.connect(QUEUE_HOST)
+    const connection = await amqp.connect({ hostname: "localhost", port: 5672, heartbeat: 20})
     console.log("Connected to rabbitMq")
     const channel = await connection.createChannel();
     await channel.assertQueue(QUEUE_NAME, { durable: false })
