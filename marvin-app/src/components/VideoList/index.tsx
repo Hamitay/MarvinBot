@@ -13,7 +13,7 @@ const VideoList = (props: VideoListProps) => {
         <Fragment>
             <List>
                 {videos.map((video) => (
-                    <VideoListItem video={video} />
+                    <VideoListItem key={video.id} video={video} />
                 ))}
             </List>
         </Fragment>

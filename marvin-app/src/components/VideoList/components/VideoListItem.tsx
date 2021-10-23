@@ -18,9 +18,15 @@ const VideoListItem = (props: VideoListItemProps) => {
     const { video } = props;
     const cutName = video.name.substring(0, MAX_NAME_SIZE)
     const cutUrl = video.thirdPartyUrl.replace('https://www.', '')
+
+    const handleOnClick = () => {
+        window.open(video.thirdPartyUrl, '_blank', 'noopener,noreferrer')
+    }
     return (
         <Fragment>
-            <ListItem>
+            <ListItem
+                button
+                onClick={handleOnClick}>
                 <ListItemAvatar>
                     <StyledAvatar src={video.thumbnailUrl} variant="square" />
                 </ListItemAvatar>

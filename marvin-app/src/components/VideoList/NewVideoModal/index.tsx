@@ -39,10 +39,14 @@ const ImageWrapper = styled(Box)({
     marginRight: '2rem'
 })
 
-const extractVideoId = (url: string) => {
+const matchYoutube = (url: string) => {
     const ytRegex = /(.*)((\.com)|(\.be))((\/watch\?v=)|(\/))/;
-    if (url.match(ytRegex)) {
-        return url.replace(/(.*)((\.com)|(\.be))((\/watch\?v=)|(\/))/, '')
+    return url.match(ytRegex);
+}
+
+const extractVideoId = (url: string) => {
+    if (matchYoutube(url)) {
+        return url.replace(/(.*)((\.com)|(\.be))((\/watch\?v=)|(\/))|(&.*)/g, '')
     }
 }
 
@@ -54,10 +58,10 @@ const NewVideoModal = (props: NewPlaylistModalProps) => {
     const [newVideoUrl, setNewVideoUrl] = useState<string>('');
     const [newVideoThumbnailUrl, setVideoThumbnailUrl] = useState<string>(THUMBNAIL_PLACEHOLDER);
     const [hasInputError, setHasInputError] = useState(false);
+    const [hasUrlInputError, sethasUrlInputError] = useState(false);
 
     const handleNameChange = (event: any) => {
         const { target: { value } } = event;
-        // TODO sanitize input
         setNewVideoName(value);
     }
 
@@ -79,6 +83,11 @@ const NewVideoModal = (props: NewPlaylistModalProps) => {
             return setHasInputError(true);
         }
 
+        if (!matchYoutube(newVideoUrl)) {
+            return sethasUrlInputError(true);
+        }    
+
+
         const request = {
             name: newVideoName,
             url: newVideoUrl,
@@ -93,6 +102,8 @@ const NewVideoModal = (props: NewPlaylistModalProps) => {
         setNewVideoName('');
         setNewVideoUrl('');
         setVideoThumbnailUrl('');
+        setHasInputError(false);
+        sethasUrlInputError(false);
     }
 
     const closeModal = () => {
@@ -121,7 +132,7 @@ const NewVideoModal = (props: NewPlaylistModalProps) => {
                         value={newVideoUrl}
                         onChange={handleUrlChange}
                         error={hasInputError}
-
+                        helperText={hasInputError && 'Must be valid URL from YT'}
                     />
                     <TextField
                         required
@@ -129,8 +140,7 @@ const NewVideoModal = (props: NewPlaylistModalProps) => {
                         label="Video Name"
                         value={newVideoName}
                         onChange={handleNameChange}
-                        error={hasInputError}
-
+                        error={hasUrlInputError}
                     />
                     <StyledSubmitButton
                         onClick={handleSubmit}
