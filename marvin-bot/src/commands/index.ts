@@ -5,7 +5,6 @@ import PlayCommand from "./play/PlayCommand";
 import MenuCommand from "./menu/MenuCommand";
 import StopCommand from "./stop/StopCommand";
 import QueueCommand from "./queue/QueueCommand";
-import VolumeCommand from "./volume/VolumeCommand";
 import HelpCommand from "./help/HelpCommand";
 import SkipCommand from "./skip/SkipCommand";
 import PlaylistCommand from "./playlist/PlaylistCommand";
@@ -19,7 +18,6 @@ export default class Commands {
     playCommand: PlayCommand,
     stopCommand: StopCommand,
     queueCommand: QueueCommand,
-    volumeCommand: VolumeCommand,
     menuCommand: MenuCommand,
     skipCommand: SkipCommand,
     playlistCommand: PlaylistCommand,
@@ -29,7 +27,6 @@ export default class Commands {
       playCommand,
       stopCommand,
       queueCommand,
-      volumeCommand,
       menuCommand,
       skipCommand,
       playlistCommand,

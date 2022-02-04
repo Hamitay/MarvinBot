@@ -3,7 +3,7 @@ import { singleton } from "tsyringe";
 import { SongInfo } from "../song/SongInfo";
 import ChannelQueue from "./ChannelQueue";
 
-const DEFAULT_VOLUME = 0.05;
+const DEFAULT_VOLUME = 1;
 @singleton()
 export default class QueueService {
   #queueMap: Map<string, ChannelQueue>;
@@ -20,7 +20,7 @@ export default class QueueService {
     return this.#queueMap.get(guildId);
   }
 
-  public addSongsToQueue(messageContext: Message, songs: SongInfo[]) {
+  public addSongsToQueue(messageContext: Message, songs: SongInfo[], loop?: boolean) {
     const guildId = messageContext.guild?.id;
     if (!guildId) {
       throw new Error("Guild id not provided");
@@ -37,6 +37,7 @@ export default class QueueService {
         songs: songs,
         volume: DEFAULT_VOLUME,
         playing: true,
+        loop,
       };
 
       this.createQueue(guildId, queueConstruct);
