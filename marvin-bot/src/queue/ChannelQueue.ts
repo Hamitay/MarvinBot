@@ -9,4 +9,5 @@ export default interface ChannelQueue {
   songs?: SongInfo[],
   volume: number,
   playing?: boolean,
+  loop?: boolean,
 }
