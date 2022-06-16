@@ -85,3 +85,19 @@ jobs:
         name: henriqueamitay/marvin-admin
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
+
+  deploy:
+    needs: [build-admin, build-app, build-bot]
+    runs-on: ubuntu-latest
+    steps:
+       - name: Run deployment script
+         uses: fifsky/ssh-action@master
+         with:
+          command: |
+            ls -a
+            echo "env_var:$PATH"
+            exit 1
+          host: ${{ secrets.HOST }}
+          user: root
+          key: ${{ secrets.SSH_PRIVATE_KEY}}
+          args: "-tt -vvv"
