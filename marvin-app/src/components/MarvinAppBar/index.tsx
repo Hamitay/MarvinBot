@@ -18,7 +18,7 @@ const MarvinAppBar = () => (
     <StyledAppBar>
         <MarvinIcon />
         <StyledTypography variant="h6">
-            Marvin Admin
+            Marvin Admin v2
         </StyledTypography>
     </StyledAppBar>
 )

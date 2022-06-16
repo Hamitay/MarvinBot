@@ -94,9 +94,7 @@ jobs:
          uses: fifsky/ssh-action@master
          with:
           command: |
-            ls -a
-            echo "env_var:$PATH"
-            exit 1
+            bash deploy.sh
           host: ${{ secrets.HOST }}
           user: root
           key: ${{ secrets.SSH_PRIVATE_KEY}}
