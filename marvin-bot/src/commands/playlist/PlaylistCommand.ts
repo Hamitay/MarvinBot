@@ -12,6 +12,7 @@ const shuffle = require("fisher-yates");
 
 const DIRECTIVE = "playlist";
 const SHUFFLE_DIRECTIVE = "shuffle";
+const LOOP_DIRECTIVE = "loop"
 
 @injectable()
 export default class PlaylistCommand extends Command {
@@ -61,11 +62,17 @@ export default class PlaylistCommand extends Command {
       songs = shuffle(songs);
     }
 
-    await this.#songService.playPlaylistAtChannel(songs, voiceChannel, message);
+    const loop = this.#shouldLoop(args)
+
+    await this.#songService.playPlaylistAtChannel(songs, voiceChannel, message, loop);
     return await this.respond(messages.PLAYING_PLAYLIST(playlistName));
   }
 
+  #shouldLoop(args: string[]) {
+    return args.length >= 2 && !!args.find((d) => d === LOOP_DIRECTIVE);
+  }
+
   #shouldShuffle(args: string[]) {
-    return args.length >= 2 && args[1] == SHUFFLE_DIRECTIVE;
+    return args.length >= 2 && !!args.find((d) => d === SHUFFLE_DIRECTIVE);
   }
 }

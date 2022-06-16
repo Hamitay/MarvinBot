@@ -33,17 +33,18 @@ export default class SongService {
   public async playPlaylistAtChannel(
     songs: SongInfo[],
     voiceChannel: VoiceChannel,
-    messageContext: Message
+    messageContext: Message,
+    loop?: boolean,
   ) {
     const guildId = messageContext.guild?.id;
 
     if (guildId) {
       await this.#queueService.purgeQueueById(guildId);
-      this.#queueService.addSongsToQueue(messageContext, songs);
+      this.#queueService.addSongsToQueue(messageContext, songs, loop);
 
       const queue = await this.#queueService.connectQueueToChannel(
         messageContext,
-        voiceChannel
+        voiceChannel,
       );
       await this.execute(queue);
 
@@ -92,7 +93,12 @@ export default class SongService {
     const dispatcher = queue.connection
       ?.play(stream, { type: "unknown" })
       .on("finish", () => {
-        queue.songs?.shift();
+        const playedSong = queue.songs?.shift();
+
+        if(queue.loop && playedSong) {
+          queue.songs?.push(playedSong)
+        }
+
         this.execute(queue);
       })
       .on("error", (err) => {
