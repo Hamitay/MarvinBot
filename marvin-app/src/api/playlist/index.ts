@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios"
 
-const API_URL = "http://marvin.api.hamitay.com/api"
+const API_URL = "http://localhost:5000/api"
 export interface Playlist {
     id: number,
     name: string
@@ -74,9 +74,15 @@ const addVideoToPlaylist = async (playlistId: string, payload: AddVideoRequest):
     return response.data;
 }
 
+const retryVideoDownload = async (videoId: string): Promise<Video> => {
+    const response = await axios.put<void, AxiosResponse<Video>>(`${API_URL}/video/${videoId}`)
+    return response.data;
+}
+
 export {
     getAllPlaylists,
     createPlaylist,
     getPlaylistById,
-    addVideoToPlaylist
+    addVideoToPlaylist,
+    retryVideoDownload
 }

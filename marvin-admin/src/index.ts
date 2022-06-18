@@ -5,6 +5,7 @@ import cors from "cors";
 
 import playlistController from "./playlist/PlaylistController";
 import { setUpConsumer } from "./publisher";
+import videoController from "./video/VideoController";
 
 dotenv.config()
 
@@ -16,6 +17,7 @@ app.use(cors())
 
 // Register routes
 app.use("/api/playlist", playlistController);
+app.use("/api/video", videoController);
 
 app.listen(PORT, () => console.log("Api enabled and listening on port: " + PORT));
 setUpConsumer();

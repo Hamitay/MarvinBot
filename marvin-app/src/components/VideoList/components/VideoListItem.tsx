@@ -1,41 +1,58 @@
-import { Avatar, Divider, ListItem, ListItemAvatar, ListItemText, styled } from "@material-ui/core"
-import { Fragment } from "react"
-import { Video } from "../../../api/playlist"
-import VideoStatus from "./VideoStatus"
+import {
+  Avatar,
+  Divider,
+  Link,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  styled,
+} from "@material-ui/core";
+import React from "react";
+import { Fragment } from "react";
+import { retryVideoDownload, Video } from "../../../api/playlist";
+import VideoStatus from "./VideoStatus";
 
 const MAX_NAME_SIZE = 30;
 
 type VideoListItemProps = {
-    video: Video,
-}
+  video: Video;
+};
 
 const StyledAvatar = styled(Avatar)({
-    height: '3rem',
-    width: '3rem'
-})
+  height: "6rem",
+  width: "6rem",
+  marginRight: "1rem",
+});
 
 const VideoListItem = (props: VideoListItemProps) => {
-    const { video } = props;
-    const cutName = video.name.substring(0, MAX_NAME_SIZE)
-    const cutUrl = video.thirdPartyUrl.replace('https://www.', '')
+  const { video } = props;
+  const cutName = video.name.substring(0, MAX_NAME_SIZE);
+  const url = video.thirdPartyUrl;
+  const cutUrl = url.replace("https://www.", "");
 
-    const handleOnClick = () => {
-        window.open(video.thirdPartyUrl, '_blank', 'noopener,noreferrer')
-    }
-    return (
-        <Fragment>
-            <ListItem
-                button
-                onClick={handleOnClick}>
-                <ListItemAvatar>
-                    <StyledAvatar src={video.thumbnailUrl} variant="square" />
-                </ListItemAvatar>
-                <ListItemText primary={cutName} secondary={cutUrl} />
-                <VideoStatus status={video.status} />
-            </ListItem>
-            <Divider />
-        </Fragment>
-    )
-}
+  const handleRetry = React.useCallback(async () => {
+    await retryVideoDownload(video.id.toString());
+  }, [video]);
 
-export default VideoListItem
+  return (
+    <Fragment>
+      <ListItem>
+        <ListItemAvatar>
+          <StyledAvatar src={video.thumbnailUrl} variant="square" />
+        </ListItemAvatar>
+        <ListItemText
+          primary={cutName}
+          secondary={
+            <Link href={url} target="_blank" rel="noopener,noreferrer">
+              {cutUrl}
+            </Link>
+          }
+        />
+        <VideoStatus status={video.status} handleRetry={handleRetry} />
+      </ListItem>
+      <Divider />
+    </Fragment>
+  );
+};
+
+export default VideoListItem;
