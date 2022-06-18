@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios"
 
-const API_URL = "http://localhost:5000/api"
+const API_URL = "http://marvin.api.hamitay.com/api"
+
 export interface Playlist {
     id: number,
     name: string
