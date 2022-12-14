@@ -32,7 +32,7 @@
         "axios": "^0.23.0",
         "cors": "^2.8.5",
         "discord.js": "^12.5.3",
-        "express": "^4.17.1",
+        "express": "^4.17.3",
         "ffmpeg": "0.0.4",
         "ffmpeg-static": "^4.4.0",
         "fisher-yates": "^1.0.3",
