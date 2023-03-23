@@ -42,7 +42,7 @@
         "ts-node-dev": "^1.1.6",
         "tsyringe": "^4.5.0",
         "youtube-mp3-downloader": "^0.7.7",
-        "ytdl-core": "^4.9.1",
+        "ytdl-core": "^4.11.2",
         "ytpl": "^2.2.1"
     }
 }
