@@ -3637,11 +3637,6 @@
   "resolved" "https://registry.npmjs.org/opusscript/-/opusscript-0.0.8.tgz"
   "version" "0.0.8"
 
-"opusscript@0.0.7":
-  "integrity" "sha512-DcBadTdYTUuH9zQtepsLjQn4Ll6rs3dmeFvN+SD0ThPnxRBRm/WC1zXWPg+wgAJimB784gdZvUMA57gDP7FdVg=="
-  "resolved" "https://registry.npmjs.org/opusscript/-/opusscript-0.0.7.tgz"
-  "version" "0.0.7"
-
 "p-each-series@^2.1.0":
   "integrity" "sha512-ycIL2+1V32th+8scbpTvyHNaHe02z0sjgh91XXjAk+ZeXoPN4Z46DVUnzdso0aX4KckKw0FNNFHdjZ2UsZvxiA=="
   "resolved" "https://registry.npmjs.org/p-each-series/-/p-each-series-2.2.0.tgz"
