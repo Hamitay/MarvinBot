@@ -5,6 +5,7 @@ WORKDIR /app
 COPY package.json ./
 COPY tsconfig.json ./
 
+RUN npm install -g npm@9.6.3
 RUN npm install
 ADD ./src /app/src
 RUN npm run tsc
@@ -17,6 +18,7 @@ WORKDIR /app
 COPY --from=ts-builder ./app/build ./build
 
 COPY package* ./
+RUN npm install -g npm@9.6.3
 RUN npm i
 
 COPY ./ ./
