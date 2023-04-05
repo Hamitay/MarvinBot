@@ -38,7 +38,7 @@
         "cors": "^2.8.5",
         "discord-player": "^6.1.1",
         "express": "^4.17.1",
-        "ffmpeg-static": "^4.4.1",
+        "ffmpeg-static": "^5.1.0",
         "fisher-yates": "^1.0.3",
         "fluent-ffmpeg": "^2.1.2",
         "libsodium-wrappers": "^0.7.11",
@@ -50,7 +50,6 @@
         "ts-node-dev": "^1.1.6",
         "tsyringe": "^4.5.0",
         "youtube-mp3-downloader": "^0.7.7",
-        "ytdl-core": "^4.11.3",
         "ytpl": "^2.2.1"
     }
 }

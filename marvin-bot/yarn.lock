@@ -2187,10 +2187,10 @@
   dependencies:
     "bser" "2.1.1"
 
-"ffmpeg-static@^4.4.1", "ffmpeg-static@^5.0.2 || ^4.2.7 || ^3.0.0 || ^2.4.0":
-  "integrity" "sha512-gyGTIf5kgmLDmH7Rwj8vMmNK46bjXKKofHS2gY+LUqoTe/iybVuTuvnhJQR2tZHlKlDG7A/BIH7cRa2jWDKgWw=="
-  "resolved" "https://registry.npmjs.org/ffmpeg-static/-/ffmpeg-static-4.4.1.tgz"
-  "version" "4.4.1"
+"ffmpeg-static@^5.0.2 || ^4.2.7 || ^3.0.0 || ^2.4.0", "ffmpeg-static@^5.1.0":
+  "integrity" "sha512-eEWOiGdbf7HKPeJI5PoJ0oCwkL0hckL2JdS4JOuB/gUETppwkEpq8nF0+e6VEQnDCo/iuoipbTUsn9QJmtpNkg=="
+  "resolved" "https://registry.npmjs.org/ffmpeg-static/-/ffmpeg-static-5.1.0.tgz"
+  "version" "5.1.0"
   dependencies:
     "@derhuerst/http-basic" "^8.2.0"
     "env-paths" "^2.2.0"
@@ -5045,7 +5045,7 @@
   "resolved" "https://registry.npmjs.org/youtube-sr/-/youtube-sr-4.3.4.tgz"
   "version" "4.3.4"
 
-"ytdl-core@^4.0.4", "ytdl-core@^4.11.3", "ytdl-core@4.x":
+"ytdl-core@^4.0.4", "ytdl-core@4.x":
   "integrity" "sha512-0KerQw+R7Nnhcebxq6WPopO92VLNnsoRVjJuhGhRzgfK1YdrnG1aqaq4zycolMBY+K8TZHXPV7ZNIjcawD/BPA=="
   "resolved" "https://registry.npmjs.org/ytdl-core/-/ytdl-core-4.11.3.tgz"
   "version" "4.11.3"
