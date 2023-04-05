@@ -1,9 +1,8 @@
 import { injectable } from "tsyringe";
 import AdminClient from "../admin/AdminClient";
-import { SongInfo } from "../song/SongInfo";
 
 const OUTPUT_PATH = process.env.OUTPUT_PATH;
-
+/*
 @injectable()
 export default class PlaylistService {
 
@@ -58,3 +57,4 @@ export default class PlaylistService {
     }));
   }
 }
+*/
