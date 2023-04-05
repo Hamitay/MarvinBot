@@ -1,4 +1,5 @@
 import {
+  CacheType,
   CommandInteraction,
   Message,
   SlashCommandBuilder,
@@ -22,4 +23,12 @@ export abstract class SlashCommand {
   abstract getName(): String;
 
   abstract execute(interaction: CommandInteraction): Promise<any>;
+
+  async getVoiceChannel(interaction: CommandInteraction<CacheType>) {
+    const { guild, user } = interaction;
+
+    const guildMember = await guild?.members.fetch({ user });
+
+    return guildMember?.voice.channel;
+  }
 }

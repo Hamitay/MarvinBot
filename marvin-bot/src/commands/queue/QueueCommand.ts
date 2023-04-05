@@ -1,45 +1,77 @@
-import { Message } from "discord.js";
 import { injectable } from "tsyringe";
-import QueueService from "../../queue";
-import { Command } from "../command";
 import messages from "./messages";
 import commonMessages from "../commonMessages";
+import { SlashCommand } from "../command";
+import {
+  SlashCommandSubcommandsOnlyBuilder,
+  SlashCommandBuilder,
+  CommandInteraction,
+  CacheType,
+  EmbedBuilder,
+} from "discord.js";
+import SongService from "../../song/SongService";
 
-const DIRECTIVE = "queue";
+const commandName = "queue";
+const commandDescription = "Prints the current queue";
 
 @injectable()
-export default class QueueCommand extends Command {
-  #queueService: QueueService;
+export default class QueueCommand extends SlashCommand {
+  #builder: SlashCommandSubcommandsOnlyBuilder;
 
-  constructor(queueService: QueueService) {
+  #songService: SongService;
+
+  constructor(songService: SongService) {
     super();
-    this.#queueService = queueService;
+
+    this.#songService = songService;
+
+    this.#builder = new SlashCommandBuilder()
+      .setName(commandName)
+      .setDescription(commandDescription);
   }
 
-  getDirective(): string {
-    return DIRECTIVE;
+  getName(): String {
+    return commandName;
   }
 
-  getHelpMessage(): string {
-    return "Prints the current queue";
+  getBuilder(): SlashCommandSubcommandsOnlyBuilder {
+    return this.#builder;
   }
 
-  async execute(message: Message): Promise<string> {
-    const guildId = message.guild?.id;
+  async execute(interaction: CommandInteraction<CacheType>): Promise<any> {
+    const voiceChannel = await super.getVoiceChannel(interaction);
 
-    if (!guildId) {
-      return this.respond(commonMessages.NO_GUILD_ID_ERROR);
+    if (!voiceChannel) {
+      return await interaction.followUp(commonMessages.NOT_IN_VOICE_CHANNEL);
     }
 
-    const queue = this.#queueService.getQueue(guildId);
-    const songs = queue?.songs;
+    await interaction.deferReply();
 
-    if (!songs || songs.length === 0) {
-      return this.respond(messages.EMPTY_LIST);
+    const queue = await this.#songService.getQueue(voiceChannel);
+
+    if (!queue) {
+      return await interaction.followUp(messages.EMPTY_LIST);
     }
 
-    const songList = songs.map((song) => `- ${song.title}\n`).join("")
+    const currentTrackName = `- **${queue.currentTrack?.title}**`;
 
-    return this.respond(songList);
+    const queuedTrackNames = queue.tracks.map((track) => {
+      `- ${track.title}`;
+    });
+
+    const trackNames = [currentTrackName, ...queuedTrackNames]
+      .join("\n")
+      .slice(0, 4095);
+
+    const queueEmbed = new EmbedBuilder()
+      .setColor(0x0099ff)
+      .setTitle("Current queue")
+      .setAuthor({
+        name: "The queue has the following songs",
+      })
+      .setDescription(trackNames)
+      .setTimestamp();
+
+    return await interaction.followUp({ embeds: [queueEmbed] });
   }
 }

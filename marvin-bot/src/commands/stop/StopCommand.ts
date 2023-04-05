@@ -1,45 +1,52 @@
-import { Message } from "discord.js";
+import {
+  CacheType,
+  CommandInteraction,
+  SlashCommandBuilder,
+  SlashCommandSubcommandsOnlyBuilder,
+} from "discord.js";
 import { injectable } from "tsyringe";
-import QueueService from "../../queue";
-import { Command } from "../command";
+import { SlashCommand } from "../command";
+import SongService from "../../song/SongService";
 import messages from "./messages";
-import commonMessages from "../commonMessages";
 
-const DIRECTIVE = "stop";
+const commandName = "stop";
+const commandDescription = "Stops the current song and purges the queue";
 
 @injectable()
-export default class StopCommand extends Command {
-  #queueService: QueueService;
+export default class StopCommand extends SlashCommand {
+  #builder: SlashCommandSubcommandsOnlyBuilder;
 
-  constructor(queueService: QueueService) {
+  #songService: SongService;
+
+  constructor(songService: SongService) {
     super();
-    this.#queueService = queueService;
+
+    this.#songService = songService;
+
+    this.#builder = new SlashCommandBuilder()
+      .setName(commandName)
+      .setDescription(commandDescription);
   }
 
-  getDirective(): string {
-    return DIRECTIVE;
+  getName(): String {
+    return commandName;
   }
 
-  getHelpMessage(): string {
-    return "Stops the current song and clears the queue.";
+  getBuilder(): SlashCommandSubcommandsOnlyBuilder {
+    return this.#builder;
   }
 
-  async execute(message: Message): Promise<string> {
-    const guildId = message.guild?.id;
+  async execute(interaction: CommandInteraction<CacheType>): Promise<any> {
+    const voiceChannel = await super.getVoiceChannel(interaction);
 
-    if (!guildId) {
-      return this.respond(commonMessages.NO_GUILD_ID_ERROR);
+    if (!voiceChannel) {
+      return await interaction.followUp(messages.NO_SONGS_ERRORS);
     }
 
-    const queue = this.#queueService.getQueue(guildId);
-    const songs = queue?.songs;
+    await interaction.deferReply();
 
-    if (!songs || songs.length === 0) {
-      return this.respond(messages.NO_SONGS_ERRORS);
-    }
+    await this.#songService.stopPlaylist(voiceChannel);
 
-    this.#queueService.deleteQueueById(guildId);
-
-    return this.respond(messages.STOP_MESSAGE);
+    return await interaction.followUp(messages.STOP_MESSAGE);
   }
 }

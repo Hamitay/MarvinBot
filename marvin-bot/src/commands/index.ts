@@ -1,15 +1,22 @@
 import { injectable } from "tsyringe";
 import { SlashCommand } from "./command";
-import { PingCommand } from "./ping";
 import PlayCommand from "./play/PlayCommand";
+import StopCommand from "./stop/StopCommand";
+import SkipCommand from "./skip/SkipCommand";
+import QueueCommand from "./queue/QueueCommand";
 
 @injectable()
 export default class Commands {
   commandList: SlashCommand[];
   commandMap: Map<string, SlashCommand>;
 
-  constructor(pingCommand: PingCommand, playCommand: PlayCommand) {
-    this.commandList = [pingCommand, playCommand];
+  constructor(
+    playCommand: PlayCommand,
+    stopCommand: StopCommand,
+    skipCommand: SkipCommand,
+    queueCommand: QueueCommand
+  ) {
+    this.commandList = [playCommand, stopCommand, skipCommand, queueCommand];
     this.commandMap = this.buildCommandMap(this.commandList);
   }
 

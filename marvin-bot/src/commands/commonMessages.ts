@@ -1,6 +1,6 @@
 const messages = {
   NOT_IN_VOICE_CHANNEL:
-    "How do you expect me to play anything? I'm not in a voice channel",
+    "How do you expect me to to do that? I'm not in a voice channel",
   UNKNOWN_NUMBER_OF_ARGUMENTS_ERROR:
     "Unsurprisingly you can't seem to use a simple command with the right ammount of arguments",
   UNKNOWN_ERROR: (error: string) =>

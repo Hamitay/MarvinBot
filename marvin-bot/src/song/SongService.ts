@@ -1,6 +1,6 @@
 import { VoiceBasedChannel } from "discord.js";
 import { singleton } from "tsyringe";
-import { QueryType, useMasterPlayer } from "discord-player";
+import { QueryType, useMasterPlayer, useQueue } from "discord-player";
 
 @singleton()
 export default class SongService {
@@ -47,6 +47,32 @@ export default class SongService {
 
     const { queue } = await player.play(voiceConnection, result);
 
+    queue.clear;
+
     return { tracks, queue, playlist };
+  }
+
+  public async stopPlaylist(voiceConnection: VoiceBasedChannel) {
+    const { guildId } = voiceConnection;
+
+    const queue = await useQueue(guildId);
+    await queue?.delete();
+  }
+
+  public async skipPlaylist(
+    voiceConnection: VoiceBasedChannel,
+    toSkip: number = 1
+  ) {
+    const { guildId } = voiceConnection;
+
+    const queue = await useQueue(guildId);
+
+    for (let i = 0; i < toSkip; i++) {
+      await queue?.dispatcher?.end();
+    }
+  }
+
+  public async getQueue(voiceConnection: VoiceBasedChannel) {
+    return await useQueue(voiceConnection.guildId);
   }
 }

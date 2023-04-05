@@ -62,14 +62,6 @@ export default class PlayCommand extends SlashCommand {
     return commandName;
   }
 
-  async #getVoiceChannel(interaction: CommandInteraction<CacheType>) {
-    const { guild, user } = interaction;
-
-    const guildMember = await guild?.members.fetch({ user });
-
-    return guildMember?.voice.channel;
-  }
-
   async execute(interaction: CommandInteraction<CacheType>) {
     const { guildId, guild } = interaction;
 
@@ -87,7 +79,7 @@ export default class PlayCommand extends SlashCommand {
 
     const subcommand = interaction.options.getSubcommand();
 
-    const voiceChannel = await this.#getVoiceChannel(interaction);
+    const voiceChannel = await super.getVoiceChannel(interaction);
 
     if (!voiceChannel) {
       await interaction.reply(

@@ -1,51 +1,63 @@
-import { Message } from "discord.js";
+import { CacheType, CommandInteraction, SlashCommandBuilder } from "discord.js";
 import { injectable } from "tsyringe";
-import QueueService from "../../queue";
-import { Command } from "../command";
-import commonMessages from "../commonMessages";
+import { SlashCommand } from "../command";
 import messages from "./messages";
+import SongService from "../../song/SongService";
+import pino, { Logger } from "pino";
 
-const DIRECTIVE = "skip";
+const commandName = "skip";
+const commandDescription = "Skips the current (or more) songs from the queue";
 
 @injectable()
-export default class SkipCommand extends Command {
-  #queueService: QueueService;
+export default class SkipCommand extends SlashCommand {
+  #builder: Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
 
-  constructor(queueService: QueueService) {
+  #songService: SongService;
+
+  #logger: Logger;
+
+  constructor(songService: SongService) {
     super();
-    this.#queueService = queueService;
+    this.#logger = pino();
+    this.#songService = songService;
+
+    this.#builder = new SlashCommandBuilder()
+      .setName(commandName)
+      .setDescription(commandDescription)
+      .addIntegerOption((option) =>
+        option.setName("quantity").setDescription("How many songs to skip")
+      );
   }
 
-  getDirective(): string {
-    return DIRECTIVE;
+  getName(): String {
+    return commandName;
   }
 
-  getHelpMessage(): string {
-    return `Skips one or more songs and plays the next one on the queue.;
-    \tExample: *_m skip*
-    \tSkips the current song and plays the next one on the queue
-    \tExample: *_m skip 2*
-    \tSkips the next 2 songs and plays the next one on the queue`;
+  getBuilder(): Omit<
+    SlashCommandBuilder,
+    "addSubcommand" | "addSubcommandGroup"
+  > {
+    return this.#builder;
   }
 
-  async execute(message: Message, args: string[]): Promise<string> {
-    const guildId = message.guild?.id;
-    const numberOfSkips = parseInt(args[0]) || 1;
+  async execute(interaction: CommandInteraction<CacheType>): Promise<any> {
+    const voiceChannel = await super.getVoiceChannel(interaction);
 
-    if (!guildId) {
-      return this.respond(commonMessages.NO_GUILD_ID_ERROR);
-    }
-    const queue = this.#queueService.getQueue(guildId);
-
-    if (!queue) {
-      return this.respond(messages.EMPTY_LIST);
+    if (!voiceChannel) {
+      return await interaction.followUp(messages.EMPTY_LIST);
     }
 
-    if (numberOfSkips > 1) {
-      queue.songs = queue.songs?.slice(numberOfSkips - 1);
+    if (!interaction.isChatInputCommand()) {
+      this.#logger.error("Wrong input command");
+      throw new Error("Wrong input command");
     }
 
-    queue.connection?.dispatcher.end();
-    return this.respond(messages.SKIPPING_SONG);
+    await interaction.deferReply();
+
+    const quantity = interaction.options.getInteger("quantity") || 1;
+
+    await this.#songService.skipPlaylist(voiceChannel, quantity);
+
+    return await interaction.followUp(messages.SKIPPING_SONG);
   }
 }
