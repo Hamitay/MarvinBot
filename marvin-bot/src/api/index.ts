@@ -22,12 +22,12 @@ export default class MarvinApi {
 
   serve() {
     const app = express();
-    app.use(cors())
+    app.use(cors());
 
     app.post("/message", json(), async (req, res) => {
       const message = req.body as MessageRequest;
       try {
-        await this.#discordClient.postMessage(message.id, message.messageBody);
+        //await this.#discordClient.postMessage(message.id, message.messageBody);
       } catch (e) {
         console.error(e);
         res.send(500);
@@ -36,6 +36,8 @@ export default class MarvinApi {
       res.send(200);
     });
 
-    app.listen(PORT, () => console.log("Api enabled and listening on port: " + PORT));
+    app.listen(PORT, () =>
+      console.log("Api enabled and listening on port: " + PORT)
+    );
   }
 }
