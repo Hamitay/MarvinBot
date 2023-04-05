@@ -1,5 +1,5 @@
 # Builder stage
-FROM node:16.9.0-alpine as ts-builder
+FROM node:16-alpine as ts-builder
 
 WORKDIR /app
 COPY package.json ./
@@ -10,7 +10,7 @@ ADD ./src /app/src
 RUN npm run tsc
 
 # Runner Stage
-FROM node:16.9.0-alpine as ts-runner
+FROM node:16-alpine as ts-runner
 RUN apk add  --no-cache ffmpeg
 
 WORKDIR /app
