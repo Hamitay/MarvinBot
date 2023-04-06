@@ -46,7 +46,7 @@ export default class DiscordClient {
 
   public init() {
     this.#client.once(Events.ClientReady, (c) => {
-      this.#logger.info("I'm ready and upgraded");
+      this.#logger.info("I'm ready and upgradeda");
     });
 
     this.#client.on(Events.InteractionCreate, async (interaction) => {
