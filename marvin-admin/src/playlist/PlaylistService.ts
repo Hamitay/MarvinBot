@@ -1,43 +1,43 @@
 import { Playlist, Video } from ".prisma/client";
 import PlaylistNotFoundError from "../errors/PlaylistNotFoundError";
-import { publishNewVideoMarvinEvent } from "../publisher";
-import { VIDEO_STATUS } from "../video/enum";
 import PlaylistRepository from "./PlaylistRepository";
 
 const getPlaylists = async (): Promise<Playlist[]> => {
-    return await PlaylistRepository.getPlaylists();
-}
+  return await PlaylistRepository.getPlaylists();
+};
 
-const createPlaylist = async (name: string, creatorId: number): Promise<Playlist> => {
-    return await PlaylistRepository.createPlaylist(name, creatorId);
-}
+const createPlaylist = async (name: string): Promise<Playlist> => {
+  return await PlaylistRepository.createPlaylist(name);
+};
 
 const getPlaylistById = async (id: number): Promise<Playlist> => {
-    const playlist = await PlaylistRepository.getPlaylistById(id)
+  const playlist = await PlaylistRepository.getPlaylistById(id);
 
-    if (!playlist) {
-        throw new PlaylistNotFoundError(id);
-    }
-    
-    return playlist;
-}
+  if (!playlist) {
+    throw new PlaylistNotFoundError(id);
+  }
 
-const addVideoToPlaylist = async (playlistId: number, videoName: string, videoUrl: string, thumbnailUrl: string): Promise<Video> => {
-    const path = `${encodeURIComponent(videoName)}.mp4`;
-    const newVideo = await PlaylistRepository.addVideoToPlaylist(playlistId, 
-        videoName, 
-        videoUrl, 
-        path, 
-        VIDEO_STATUS.REQUESTED,
-        thumbnailUrl);
+  return playlist;
+};
 
-    await publishNewVideoMarvinEvent(newVideo.id);
-    return newVideo;
-}
+const addVideoToPlaylist = async (
+  playlistId: number,
+  videoName: string,
+  videoUrl: string,
+  thumbnailUrl: string
+): Promise<Video> => {
+  const newVideo = await PlaylistRepository.addVideoToPlaylist(
+    playlistId,
+    videoName,
+    videoUrl,
+    thumbnailUrl
+  );
+  return newVideo;
+};
 
 export default {
-    getPlaylists,
-    createPlaylist,
-    addVideoToPlaylist,
-    getPlaylistById
-}
+  getPlaylists,
+  createPlaylist,
+  addVideoToPlaylist,
+  getPlaylistById,
+};
