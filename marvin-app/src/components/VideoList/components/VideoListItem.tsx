@@ -7,10 +7,8 @@ import {
   ListItemText,
   styled,
 } from "@material-ui/core";
-import React from "react";
 import { Fragment } from "react";
-import { retryVideoDownload, Video } from "../../../api/playlist";
-import VideoStatus from "./VideoStatus";
+import { Video } from "../../../api/playlist";
 
 const MAX_NAME_SIZE = 30;
 
@@ -27,12 +25,8 @@ const StyledAvatar = styled(Avatar)({
 const VideoListItem = (props: VideoListItemProps) => {
   const { video } = props;
   const cutName = video.name.substring(0, MAX_NAME_SIZE);
-  const url = video.thirdPartyUrl;
+  const url = video.url;
   const cutUrl = url.replace("https://www.", "");
-
-  const handleRetry = React.useCallback(async () => {
-    await retryVideoDownload(video.id.toString());
-  }, [video]);
 
   return (
     <Fragment>
@@ -48,7 +42,6 @@ const VideoListItem = (props: VideoListItemProps) => {
             </Link>
           }
         />
-        <VideoStatus status={video.status} handleRetry={handleRetry} />
       </ListItem>
       <Divider />
     </Fragment>

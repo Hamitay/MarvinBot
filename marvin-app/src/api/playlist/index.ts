@@ -1,89 +1,107 @@
-import axios, { AxiosResponse } from "axios"
+import { initializeApp } from "firebase/app";
+import {
+  getFirestore,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+  setDoc,
+  arrayUnion,
+} from "firebase/firestore/lite";
+import { v4 } from "uuid";
 
-const API_URL = "http://marvin.api.hamitay.com/api"
+const firebaseConfig = {
+  apiKey: "AIzaSyAOZw7qOXOAJc27gQfwEkYwvo7BpyCdMEI",
+  authDomain: "marvin-admin.firebaseapp.com",
+  projectId: "marvin-admin",
+  storageBucket: "marvin-admin.appspot.com",
+  messagingSenderId: "831952032993",
+  appId: "1:831952032993:web:3a334824bfbcadbe29d3a0",
+  measurementId: "G-HJWZ8TQNJN",
+};
+
+const COLLECTION_NAME = "playlists";
 
 export interface Playlist {
-    id: number,
-    name: string
-    creator: Creator
-    createdAt: Date,
-    updatedAt: Date
-    videos: Video[]
+  id: string;
+  name: string;
+  videos: Video[];
 }
 
 export interface Creator {
-    name: string,
-    admin: boolean
+  name: string;
+  admin: boolean;
 }
 
-export enum VideoStatusEnum {
-    FAILED = "FAILED",
-    REQUESTED = "REQUESTED",
-    DOWNLOADING = "DOWNLOADING",
-    FINISHED = "FINISHED"
-}
 export interface Video {
-    name: string,
-    thirdPartyUrl: string,
-    thumbnailUrl: string,
-    status: VideoStatusEnum,
-    id: number,
+  name: string;
+  url: string;
+  thumbnailUrl: string;
+  id: string;
 }
 export interface PlaylistRequest {
-    name: string,
-    creatorId: number,
+  name: string;
+  creatorId: number;
 }
 
 export interface AddVideoRequest {
-    name: string,
-    url: string,
-    thumbnailUrl: string,
+  name: string;
+  url: string;
+  thumbnailUrl: string;
 }
 
-const sanitizeName = (name: string): string => {
-    return name
-        .trim()
-        .replace(/[\s]+/g, "_")
-        .toLowerCase();
-}
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 const getAllPlaylists = async (): Promise<Playlist[]> => {
-    const response = await axios.get(API_URL + '/playlist')
-    return response.data;
-}
+  const playlistsCol = collection(db, COLLECTION_NAME);
+  const snapshot = await getDocs(playlistsCol);
+  const playlists = snapshot.docs.map((doc) => {
+    const data = doc.data() as Playlist;
+
+    const playlist = {
+      id: doc.id,
+      name: data.name,
+      videos: data.videos,
+    };
+    return playlist;
+  });
+
+  return playlists;
+};
 
 const getPlaylistById = async (id: string): Promise<Playlist> => {
-    const response = await axios.get(API_URL + `/playlist/${id}`);
-    return response.data;
-}
+  const ref = doc(db, COLLECTION_NAME, id);
+  const snap = await getDoc(ref);
+  return snap.data() as Playlist;
+};
 
-const createPlaylist = async (payload: PlaylistRequest): Promise<Playlist> => {
-    const sanitizedPayload = {
-        ...payload,
-        name: sanitizeName(payload.name),
-    }
-    const response = await axios.post<PlaylistRequest, AxiosResponse<Playlist>>(API_URL + '/playlist', sanitizedPayload)
-    return response.data;
-}
+const createPlaylist = async (payload: PlaylistRequest): Promise<void> => {
+  const id = v4();
 
-const addVideoToPlaylist = async (playlistId: string, payload: AddVideoRequest): Promise<Video> => {
-    const sanitizedPayload = {
-        ...payload,
-        name: sanitizeName(payload.name),
-    }
-    const response = await axios.put<AddVideoRequest, AxiosResponse<Video>>(`${API_URL}/playlist/${playlistId}/addVideo`, sanitizedPayload)
-    return response.data;
-}
+  await setDoc(doc(db, COLLECTION_NAME, id), {
+    name: payload.name,
+    videos: [],
+  });
+};
 
-const retryVideoDownload = async (videoId: string): Promise<Video> => {
-    const response = await axios.put<void, AxiosResponse<Video>>(`${API_URL}/video/${videoId}`)
-    return response.data;
-}
+const addVideoToPlaylist = async (
+  playlistId: string,
+  payload: AddVideoRequest
+): Promise<Video> => {
+  const ref = doc(db, COLLECTION_NAME, playlistId);
 
-export {
-    getAllPlaylists,
-    createPlaylist,
-    getPlaylistById,
-    addVideoToPlaylist,
-    retryVideoDownload
-}
+  const newVideo = {
+    ...payload,
+    id: v4(),
+  };
+
+  await updateDoc(ref, {
+    videos: arrayUnion(newVideo),
+  });
+
+  return newVideo;
+};
+
+export { getAllPlaylists, createPlaylist, getPlaylistById, addVideoToPlaylist };

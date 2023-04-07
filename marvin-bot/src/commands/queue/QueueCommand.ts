@@ -55,9 +55,9 @@ export default class QueueCommand extends SlashCommand {
 
     const currentTrackName = `- **${queue.currentTrack?.title}**`;
 
-    const queuedTrackNames = queue.tracks.map((track) => {
-      `- ${track.title}`;
-    });
+    const queuedTrackNames = queue.tracks
+      .toArray()
+      .map((track) => `- ${track.title}`);
 
     const trackNames = [currentTrackName, ...queuedTrackNames]
       .join("\n")
