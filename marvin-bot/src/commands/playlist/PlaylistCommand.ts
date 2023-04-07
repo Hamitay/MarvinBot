@@ -1,77 +1,167 @@
-// import { Message } from "discord.js";
-// import { injectable } from "tsyringe";
-// import PlaylistService from "../../playlist/PlaylistService";
-// import { SongInfo } from "../../song/SongInfo";
-// import SongService from "../../song/SongService";
-// import { Command } from "../command";
-// import commonMessages from "../commonMessages";
-// import messages from "./messages";
+import { injectable } from "tsyringe";
+import { InteractionHandler, SlashCommand } from "../command";
+import PlaylistService from "../../playlist/PlaylistService";
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonInteraction,
+  ButtonStyle,
+  CacheType,
+  CommandInteraction,
+  ModalActionRowComponentBuilder,
+  ModalBuilder,
+  SlashCommandBuilder,
+  SlashCommandSubcommandsOnlyBuilder,
+  StringSelectMenuBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+} from "discord.js";
+import { buildDefaultEmbed } from "../../util/embedUtil";
+import { INTERACTION_SELECTOR } from "../menu/PlaylistSelectInteraction";
 
-// // eslint-disable-next-line @typescript-eslint/no-var-requires
-// const shuffle = require("fisher-yates");
+const commandName = "playlist";
+const commandDescription = "Displays playlist operations";
 
-// const DIRECTIVE = "playlist";
-// const SHUFFLE_DIRECTIVE = "shuffle";
-// const LOOP_DIRECTIVE = "loop"
+const playButtonSelector = "playPlaylist";
+const createButtonSelector = "createPlaylist";
+const editButtonSelector = "editPlaylist";
 
-// @injectable()
-// export default class PlaylistCommand extends Command {
-//   #playlistService: PlaylistService;
-//   #songService: SongService;
+@injectable()
+export default class PlaylistCommand extends SlashCommand {
+  #builder: SlashCommandSubcommandsOnlyBuilder;
 
-//   constructor(playlistService: PlaylistService, songService: SongService) {
-//     super();
-//     this.#playlistService = playlistService;
-//     this.#songService = songService;
-//   }
+  #playlistService: PlaylistService;
 
-//   getDirective(): string {
-//     return DIRECTIVE;
-//   }
+  #buttonInteractionHandlers: InteractionHandler<ButtonInteraction>[];
 
-//   getHelpMessage(): string {
-//     return `Sets the queue to one of the premades playlists;
-//     \tExample: *_m playlist <PLAYLIST_NAME>*
-//     \tYou can also shuffle the playlist if you wish:
-//     \tExample: *_m playlist <PLAYLIST_NAME> shuffle*
-//     \t**This will clear the current queue**`;
-//   }
+  constructor(playlistService: PlaylistService) {
+    super();
+    this.#playlistService = playlistService;
 
-//   async execute(message: Message, args: string[]): Promise<string> {
-//     if (args.length > 2) {
-//       return this.respond(commonMessages.UNKNOWN_NUMBER_OF_ARGUMENTS_ERROR);
-//     }
+    this.#builder = new SlashCommandBuilder()
+      .setName(commandName)
+      .setDescription(commandDescription);
 
-//     const voiceChannel = message.member?.voice.channel;
+    this.#buttonInteractionHandlers = [
+      new PlayButtonInteractionHandler(playlistService),
+      new CreateButtonInteractionHandler(playlistService),
+    ];
+  }
 
-//     if (!voiceChannel) {
-//       return this.respond(commonMessages.NOT_IN_VOICE_CHANNEL);
-//     }
+  getName(): String {
+    return commandName;
+  }
 
-//     const playlistName = args[0];
-//     let songs: SongInfo[] = []
-//     try {
-//       songs = await this.#playlistService.getPlaylistSongs(playlistName);
-//     } catch (error) {
-//       console.error(error)
-//       return await this.respond(`Error playing unknown playlist ${playlistName}`);
-//     }
+  getBuilder(): SlashCommandSubcommandsOnlyBuilder {
+    return this.#builder;
+  }
 
-//     if (this.#shouldShuffle(args)) {
-//       songs = shuffle(songs);
-//     }
+  getButtonHandlers(): InteractionHandler<ButtonInteraction>[] {
+    return this.#buttonInteractionHandlers;
+  }
 
-//     const loop = this.#shouldLoop(args)
+  async execute(interaction: CommandInteraction<CacheType>): Promise<any> {
+    await interaction.deferReply();
 
-//     await this.#songService.playPlaylistAtChannel(songs, voiceChannel, message, loop);
-//     return await this.respond(messages.PLAYING_PLAYLIST(playlistName));
-//   }
+    const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
+        .setCustomId(playButtonSelector)
+        .setLabel("Play")
+        .setStyle(ButtonStyle.Success),
+      new ButtonBuilder()
+        .setCustomId(createButtonSelector)
+        .setLabel("Create")
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
+        .setCustomId(editButtonSelector)
+        .setLabel("Edit")
+        .setStyle(ButtonStyle.Secondary)
+    );
 
-//   #shouldLoop(args: string[]) {
-//     return args.length >= 2 && !!args.find((d) => d === LOOP_DIRECTIVE);
-//   }
+    const menuEmbed = buildDefaultEmbed(
+      "What would you like to do? ",
+      "Playlist admin"
+    );
 
-//   #shouldShuffle(args: string[]) {
-//     return args.length >= 2 && !!args.find((d) => d === SHUFFLE_DIRECTIVE);
-//   }
-// }
+    return interaction.followUp({
+      embeds: [menuEmbed],
+      components: [actionRow],
+    });
+  }
+}
+
+class PlayButtonInteractionHandler extends InteractionHandler<ButtonInteraction> {
+  #playlistService: PlaylistService;
+
+  constructor(playlistService: PlaylistService) {
+    super();
+    this.#playlistService = playlistService;
+  }
+
+  getSelector(): String {
+    return playButtonSelector;
+  }
+  async execute(interaction: ButtonInteraction<CacheType>): Promise<any> {
+    await interaction.deferReply();
+
+    const playlists = await this.#playlistService.getAllPlaylists();
+
+    const options = playlists.map((playlist) => ({
+      label: playlist.name,
+      value: playlist.name,
+    }));
+
+    const actionRow =
+      new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+        new StringSelectMenuBuilder()
+          .setCustomId(INTERACTION_SELECTOR)
+          .setPlaceholder("No playlist selected")
+          .addOptions(...options)
+      );
+
+    const menuEmbed = buildDefaultEmbed(
+      "Choose your playlist:",
+      "Le Marvin Menu"
+    );
+
+    return interaction.followUp({
+      embeds: [menuEmbed],
+      components: [actionRow],
+    });
+  }
+}
+
+class CreateButtonInteractionHandler extends InteractionHandler<ButtonInteraction> {
+  #playlistService: PlaylistService;
+
+  constructor(playlistService: PlaylistService) {
+    super();
+    this.#playlistService = playlistService;
+  }
+
+  getSelector(): String {
+    return createButtonSelector;
+  }
+  async execute(interaction: ButtonInteraction<CacheType>): Promise<any> {
+    //const playlists = await this.#playlistService.getAllPlaylists();
+    const modal = new ModalBuilder()
+      .setCustomId("createPlaylistModal")
+      .setTitle("Create a new playlist");
+
+    const playlistNameInput = new TextInputBuilder()
+      .setCustomId("newPlaylistName")
+      .setLabel("Playlist name:")
+      .setPlaceholder("Insert name here...")
+      .setRequired(true)
+      .setStyle(TextInputStyle.Short);
+
+    const actionRow =
+      new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(
+        playlistNameInput
+      );
+
+    modal.addComponents(actionRow);
+
+    return await interaction.showModal(modal);
+  }
+}
