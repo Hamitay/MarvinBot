@@ -11,7 +11,7 @@ ADD ./src /app/src
 RUN npm run tsc
 
 # Runner Stage
-FROM node:18 as ts-runner
+FROM node:18-alpine as ts-runner
 RUN apk update
 RUN apk add
 RUN apk add ffmpeg
