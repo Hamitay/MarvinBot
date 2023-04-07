@@ -38,6 +38,7 @@
         "cors": "^2.8.5",
         "discord-player": "^6.1.1",
         "express": "^4.17.1",
+        "firebase": "^9.19.1",
         "fisher-yates": "^1.0.3",
         "fluent-ffmpeg": "^2.1.2",
         "libsodium-wrappers": "^0.7.11",

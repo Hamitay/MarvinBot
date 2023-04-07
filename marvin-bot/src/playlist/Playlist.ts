@@ -1,12 +1,12 @@
 export interface Playlist {
-    name: string,
-    id: number,
-    videos: Video[]
+  name: string;
+  id: string;
+  videos: Video[];
 }
 
 interface Video {
-    name: string,
-    url: string,
-    id: number,
-    status: string,
+  name: string;
+  url: string;
+  id: string;
+  status: string;
 }
