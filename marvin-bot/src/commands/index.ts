@@ -23,8 +23,7 @@ export default class Commands {
     stopCommand: StopCommand,
     skipCommand: SkipCommand,
     queueCommand: QueueCommand,
-    menuCommand: MenuCommand,
-    playlistCommand: PlaylistCommand
+    menuCommand: MenuCommand
   ) {
     this.commandList = [
       playCommand,
@@ -32,7 +31,6 @@ export default class Commands {
       skipCommand,
       queueCommand,
       menuCommand,
-      playlistCommand,
     ];
     const { commandMap, buttonHandlerMap, stringSelectHandlerMap } =
       this.buildMaps(this.commandList);
