@@ -23,10 +23,7 @@ export default class SkipCommand extends SlashCommand {
 
     this.#builder = new SlashCommandBuilder()
       .setName(commandName)
-      .setDescription(commandDescription)
-      .addIntegerOption((option) =>
-        option.setName("quantity").setDescription("How many songs to skip")
-      );
+      .setDescription(commandDescription);
   }
 
   getName(): String {
@@ -54,9 +51,7 @@ export default class SkipCommand extends SlashCommand {
 
     await interaction.deferReply();
 
-    const quantity = interaction.options.getInteger("quantity") || 1;
-
-    await this.#songService.skipPlaylist(voiceChannel, quantity);
+    await this.#songService.skipPlaylist(voiceChannel);
 
     return await interaction.followUp(messages.SKIPPING_SONG);
   }

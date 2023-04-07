@@ -5,7 +5,6 @@ import {
   REST,
   Routes,
   CacheType,
-  Interaction,
   ChatInputCommandInteraction,
   StringSelectMenuInteraction,
   ButtonInteraction,
@@ -14,8 +13,6 @@ import { singleton } from "tsyringe";
 import Commands from "../commands";
 import { Logger, pino } from "pino";
 import { buildPlayer } from "../song/PlayerBuilder";
-import PlaylistSelectInteraction from "../commands/menu/PlaylistSelectInteraction";
-import { InteractionHandler } from "../commands/command";
 
 const token = process.env.DISCORD_TOKEN;
 const applicationId = process.env.APPLICATION_ID || "729334553306726491";

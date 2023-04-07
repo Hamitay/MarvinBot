@@ -92,17 +92,11 @@ export default class SongService {
     await queue?.delete();
   }
 
-  public async skipPlaylist(
-    voiceConnection: VoiceBasedChannel,
-    toSkip: number = 1
-  ) {
+  public async skipPlaylist(voiceConnection: VoiceBasedChannel) {
     const { guildId } = voiceConnection;
 
     const queue = await useQueue(guildId);
-
-    for (let i = 0; i < toSkip; i++) {
-      await queue?.node.skip();
-    }
+    await queue?.node.skip();
   }
 
   public async getQueue(voiceConnection: VoiceBasedChannel) {
