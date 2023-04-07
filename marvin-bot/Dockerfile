@@ -15,6 +15,7 @@ FROM node:18-alpine as ts-runner
 RUN apk update
 RUN apk add
 RUN apk add ffmpeg
+RUN apk add --no-cache git openssh
 
 WORKDIR /app
 COPY --from=ts-builder ./app/build ./build
