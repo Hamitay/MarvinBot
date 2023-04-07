@@ -1,98 +1,70 @@
 name: publish to docker hub
 on:
   release:
-    types: [ published ]
+    types: [published]
 
 jobs:
   test-bot:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Checkout code
-      uses: actions/setup-node@v1
-      with:
-        node-version: '16.x'
-    - name: Install dependencies and test
-      working-directory: ./marvin-bot
-      run: |
-        npm install
-        npm test
+      - uses: actions/checkout@master
+      - name: Checkout code
+        uses: actions/setup-node@v1
+        with:
+          node-version: "16.x"
+      - name: Install dependencies and test
+        working-directory: ./marvin-bot
+        run: |
+          npm install
+          npm test
 
   test-app:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Checkout code
-      uses: actions/setup-node@v1
-      with:
-        node-version: '16.x'
-    - name: Install dependencies and test
-      working-directory: ./marvin-app
-      run: |
-        npm install
-        export CI=true && npm run test
-
-  test-admin:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@master
-    - name: Checkout code
-      uses: actions/setup-node@v1
-      with:
-        node-version: '16.x'
-    - name: Install dependencies and test
-      working-directory: ./marvin-admin
-      run: |
-        npm install
-        npx prisma generate
-        export CI=true && npm run test
+      - uses: actions/checkout@master
+      - name: Checkout code
+        uses: actions/setup-node@v1
+        with:
+          node-version: "16.x"
+      - name: Install dependencies and test
+        working-directory: ./marvin-app
+        run: |
+          npm install
+          export CI=true && npm run test
 
   build-bot:
-    needs: [test-bot, test-app, test-admin]
+    needs: [test-bot, test-app]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Publish to Registry
-      uses: elgohr/Publish-Docker-Github-Action@master
-      with:
-        workdir: ./marvin-bot
-        name: henriqueamitay/marvin
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      - uses: actions/checkout@master
+      - name: Publish to Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          workdir: ./marvin-bot
+          name: henriqueamitay/marvin
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
   build-app:
-    needs: [test-bot, test-app, test-admin]
+    needs: [test-bot, test-app]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: Publish to Registry
-      uses: elgohr/Publish-Docker-Github-Action@master
-      with:
-        workdir: ./marvin-app
-        name: henriqueamitay/marvin-app
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-
-  build-admin:
-    needs: [test-bot, test-app, test-admin]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@master
-    - name: Publish to Registry
-      uses: elgohr/Publish-Docker-Github-Action@master
-      with:
-        workdir: ./marvin-admin
-        name: henriqueamitay/marvin-admin
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      - uses: actions/checkout@master
+      - name: Publish to Registry
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          workdir: ./marvin-app
+          name: henriqueamitay/marvin-app
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
   deploy:
-    needs: [build-admin, build-app, build-bot]
+    needs: [build-app, build-bot]
     runs-on: ubuntu-latest
     steps:
-       - name: Run deployment script
-         uses: fifsky/ssh-action@master
-         with:
+      - name: Run deployment script
+        uses: fifsky/ssh-action@master
+        with:
           command: |
             bash deploy.sh
           host: ${{ secrets.HOST }}
