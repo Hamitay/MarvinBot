@@ -1,38 +1,127 @@
-// import { injectable } from "tsyringe";
-// import { Command } from "../command";
-// import PlaylistService from "../../playlist/PlaylistService";
+import { injectable } from "tsyringe";
+import { InteractionHandler, SlashCommand } from "../command";
+import PlaylistService from "../../playlist/PlaylistService";
+import {
+  ActionRowBuilder,
+  CacheType,
+  CommandInteraction,
+  SlashCommandBuilder,
+  SlashCommandSubcommandsOnlyBuilder,
+  StringSelectMenuBuilder,
+  StringSelectMenuInteraction,
+} from "discord.js";
+import { buildDefaultEmbed } from "../../util/embedUtil";
+import SongService from "../../song/SongService";
+import { INTERACTION_SELECTOR } from "./PlaylistSelectInteraction";
 
-// const DIRECTIVE = "menu";
+const commandName = "menu";
+const commandDescription = "Displays the available playlists";
 
-// @injectable()
-// export default class MenuCommand extends Command {
-//   #playlistService: PlaylistService;
+@injectable()
+export default class MenuCommand extends SlashCommand {
+  #builder: SlashCommandSubcommandsOnlyBuilder;
 
-//   constructor(playlistService: PlaylistService) {
-//     super();
-//     this.#playlistService = playlistService;
-//   }
+  #playlistService: PlaylistService;
 
-//   getDirective(): string {
-//     return DIRECTIVE;
-//   }
+  #stringSelectHandlers: InteractionHandler<StringSelectMenuInteraction>[];
 
-//   getHelpMessage(): string {
-//     return "Prints the available playlists";
-//   }
+  constructor(playlistService: PlaylistService, songService: SongService) {
+    super();
+    this.#playlistService = playlistService;
 
-//   async execute(): Promise<string> {
-//     let playlistResponse = "";
+    this.#builder = new SlashCommandBuilder()
+      .setName(commandName)
+      .setDescription(commandDescription);
 
-//     try {
-//       const playlistMap = await this.#playlistService.getAllPlaylists();
+    this.#stringSelectHandlers = [
+      new PlaylistSelectInteraction(playlistService, songService),
+    ];
+  }
 
-//       playlistMap.forEach((_, key) => {
-//         playlistResponse += `-> ${key}\n`;
-//       });
-//     } catch (err) {
-//       playlistResponse = `There has been the following error:\n *${err}*`;
-//     }
-//     return this.respond(playlistResponse);
-//   }
-// }
+  getName(): String {
+    return commandName;
+  }
+
+  getBuilder(): SlashCommandSubcommandsOnlyBuilder {
+    return this.#builder;
+  }
+
+  getStringSelectHandlers(): InteractionHandler<StringSelectMenuInteraction>[] {
+    return this.#stringSelectHandlers;
+  }
+
+  async execute(interaction: CommandInteraction<CacheType>): Promise<any> {
+    await interaction.deferReply();
+
+    const playlists = await this.#playlistService.getAllPlaylists();
+
+    const options = playlists.map((playlist) => ({
+      label: playlist.name,
+      value: playlist.name,
+    }));
+
+    const actionRow =
+      new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
+        new StringSelectMenuBuilder()
+          .setCustomId(INTERACTION_SELECTOR)
+          .setPlaceholder("No playlist selected")
+          .addOptions(...options)
+      );
+
+    const menuEmbed = buildDefaultEmbed(
+      "Choose your playlist:",
+      "Le Marvin Menu"
+    );
+
+    return interaction.followUp({
+      embeds: [menuEmbed],
+      components: [actionRow],
+    });
+  }
+}
+
+export class PlaylistSelectInteraction extends InteractionHandler<StringSelectMenuInteraction> {
+  #playlistService: PlaylistService;
+  #songService: SongService;
+
+  constructor(playlistService: PlaylistService, songService: SongService) {
+    super();
+    this.#playlistService = playlistService;
+    this.#songService = songService;
+  }
+
+  getSelector(): String {
+    return INTERACTION_SELECTOR;
+  }
+
+  async execute(interaction: StringSelectMenuInteraction): Promise<any> {
+    const selected = interaction.values[0];
+
+    const playlist = await this.#playlistService.getPlaylistByName(selected);
+
+    const videosNames = playlist.videos
+      .map((video) => `- ${video.name}`)
+      .join("\n");
+
+    const menuEmbed = buildDefaultEmbed(
+      "Now playing",
+      `The ${selected} playlist was selected`
+    ).setDescription(videosNames);
+
+    // Start playing song from playlist
+    const { guild, user } = interaction;
+
+    const guildMember = await guild?.members.fetch({ user });
+
+    const voiceChannel = guildMember?.voice.channel;
+
+    if (!voiceChannel) {
+      throw Error("voice channel error");
+    }
+
+    const songs = playlist.videos.map((video) => video.url);
+
+    await this.#songService.playSongsAtConnection(songs, voiceChannel);
+    await interaction.update({ embeds: [menuEmbed], components: [] });
+  }
+}

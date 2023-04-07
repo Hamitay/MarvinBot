@@ -7,6 +7,7 @@ import {
   getDocs,
   Firestore,
   getDoc,
+  doc,
 } from "firebase/firestore/lite";
 
 const firebaseConfig = {
@@ -47,7 +48,7 @@ export default class AdminClient {
     return playlists;
   };
 
-  getPlaylistById = async (id: number): Promise<Playlist> => {
+  getPlaylistById = async (id: string): Promise<Playlist> => {
     const ref = doc(this.#db, COLLECTION_NAME, id);
     const snap = await getDoc(ref);
     return snap.data() as Playlist;
