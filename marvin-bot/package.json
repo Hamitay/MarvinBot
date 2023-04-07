@@ -50,7 +50,7 @@
         "tsyringe": "^4.5.0",
         "youtube-mp3-downloader": "^0.7.7",
         "youtube-sr": "^4.3.4",
-        "ytdl-core": "https://github.com/khlevon/node-ytdl-core.git#v4.11.3-patch.1",
+        "ytdl-core": "4.9.1",
         "ytpl": "^2.2.1"
     }
 }
