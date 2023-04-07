@@ -4,20 +4,18 @@ import express from "express";
 import cors from "cors";
 
 import playlistController from "./playlist/PlaylistController";
-import { setUpConsumer } from "./publisher";
-import videoController from "./video/VideoController";
 
-dotenv.config()
+dotenv.config();
 
-const PORT = process.env.API_PORT;
+const PORT = process.env.API_PORT || 3000;
 const app = express();
 
 // Register middlewares
-app.use(cors())
+app.use(cors());
 
 // Register routes
 app.use("/api/playlist", playlistController);
-app.use("/api/video", videoController);
 
-app.listen(PORT, () => console.log("Api enabled and listening on port: " + PORT));
-setUpConsumer();
+app.listen(PORT, () =>
+  console.log("Api enabled and listening on port: " + PORT)
+);

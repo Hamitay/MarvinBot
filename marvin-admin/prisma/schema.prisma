@@ -11,28 +11,12 @@ generator client {
   previewFeatures = ["interactiveTransactions"]
 }
 
-model User {
-  id Int @id @default(autoincrement())
-
-  name String @unique
-
-  passwordMd5 String
-
-  admin Boolean
-
-  playlists Playlist[]
-}
-
 model Playlist {
   id Int @id @default(autoincrement())
 
   name String @unique
 
   videos Video[]
-
-  creatorId Int
-
-  creator User @relation(fields: [creatorId], references: [id])
 
   createdAt DateTime @default(now())
 
@@ -44,8 +28,6 @@ model Video {
 
   name String
 
-  thirdPartyUrl String
-
   url String
 
   thumbnailUrl String
@@ -53,6 +35,4 @@ model Video {
   playlistId Int
 
   playlist Playlist @relation(fields: [playlistId], references: [id])
-
-  status String
 }
