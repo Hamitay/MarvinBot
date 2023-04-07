@@ -14,6 +14,8 @@ import { buildDefaultEmbed } from "../../util/embedUtil";
 import SongService from "../../song/SongService";
 import { INTERACTION_SELECTOR } from "./PlaylistSelectInteraction";
 
+const shuffle = require("fisher-yates");
+
 const commandName = "menu";
 const commandDescription = "Displays the available playlists";
 
@@ -99,8 +101,10 @@ export class PlaylistSelectInteraction extends InteractionHandler<StringSelectMe
 
     const playlist = await this.#playlistService.getPlaylistByName(selected);
 
-    const videosNames = playlist.videos
-      .map((video) => `- ${video.name}`)
+    const videos = shuffle(playlist.videos);
+
+    const videosNames = videos
+      .map((video: any) => `- ${video.name}`)
       .join("\n");
 
     const menuEmbed = buildDefaultEmbed(
@@ -119,7 +123,7 @@ export class PlaylistSelectInteraction extends InteractionHandler<StringSelectMe
       throw Error("voice channel error");
     }
 
-    const songs = playlist.videos.map((video) => video.url);
+    const songs = videos.map((video: any) => video.url);
 
     await this.#songService.playSongsAtConnection(songs, voiceChannel);
     await interaction.update({ embeds: [menuEmbed], components: [] });

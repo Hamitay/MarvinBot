@@ -1,6 +1,6 @@
 import { VoiceBasedChannel } from "discord.js";
 import { singleton } from "tsyringe";
-import { QueryType, Track, useMasterPlayer, useQueue } from "discord-player";
+import { QueryType, useMasterPlayer, useQueue } from "discord-player";
 
 @singleton()
 export default class SongService {
@@ -35,36 +35,29 @@ export default class SongService {
       throw new Error("Player not initialized");
     }
 
+    (await this.getQueue(voiceConnection))?.clear();
+
+    const queue = await this.createQueue(voiceConnection);
+
     const tracks = songUrls.map(async (url) => {
       const result = await player.search(url, {
         searchEngine: QueryType.YOUTUBE_VIDEO,
       });
       if (result.hasTracks()) {
-        return result.tracks[0];
+        queue.addTrack(result.tracks[0]);
       }
     });
 
-    Promise.all(tracks).then(async (values) => {
-      const filteredTracks = values.filter((t) => t !== undefined) as Track[];
+    await Promise.all(tracks);
 
-      //Have to create a playlist since discord-player is odd to say the least
-      const playlist = await player.createPlaylist({
-        tracks: filteredTracks,
-        title: "createdPlaylist",
-        description: "createdPlaylist",
-        thumbnail: "",
-        type: "playlist",
-        source: "youtube",
-        author: {
-          name: "createdAuthor",
-          url: ".",
-        },
-        id: "createdPlaylistId",
-        url: "createdPlaylistUrl",
+    if (!queue.isPlaying()) {
+      await queue.connect(voiceConnection.id, {
+        deaf: true,
       });
-
-      await player.play(voiceConnection, playlist);
-    });
+      queue.node.play();
+    } else {
+      queue.node.skip();
+    }
   }
 
   public async playPlaylistAtConnection(
@@ -114,5 +107,22 @@ export default class SongService {
 
   public async getQueue(voiceConnection: VoiceBasedChannel) {
     return await useQueue(voiceConnection.guildId);
+  }
+
+  public async createQueue(voiceConnection: VoiceBasedChannel) {
+    const player = useMasterPlayer();
+
+    if (!player) {
+      throw new Error("Missing player");
+    }
+
+    return player?.nodes.create(voiceConnection.guildId, {
+      leaveOnEnd: false,
+      leaveOnEndCooldown: 60000 * 5,
+      leaveOnEmpty: false,
+      leaveOnEmptyCooldown: 60000 * 5,
+      leaveOnStop: false,
+      skipOnNoStream: true,
+    });
   }
 }
