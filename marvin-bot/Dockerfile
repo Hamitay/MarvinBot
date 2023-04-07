@@ -20,7 +20,6 @@ WORKDIR /app
 COPY --from=ts-builder ./app/build ./build
 
 COPY package* ./
-RUN npm install --global yarn
 RUN yarn
 
 COPY ./ ./
