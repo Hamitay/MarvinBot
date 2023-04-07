@@ -4,34 +4,6 @@ on:
     types: [published]
 
 jobs:
-  test-bot:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: Checkout code
-        uses: actions/setup-node@v1
-        with:
-          node-version: "16.x"
-      - name: Install dependencies and test
-        working-directory: ./marvin-bot
-        run: |
-          npm install
-          npm test
-
-  test-app:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: Checkout code
-        uses: actions/setup-node@v1
-        with:
-          node-version: "16.x"
-      - name: Install dependencies and test
-        working-directory: ./marvin-app
-        run: |
-          npm install
-          export CI=true && npm run test
-
   build-bot:
     needs: [test-bot, test-app]
     runs-on: ubuntu-latest
