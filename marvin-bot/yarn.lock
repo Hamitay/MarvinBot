@@ -2187,7 +2187,7 @@
   dependencies:
     "bser" "2.1.1"
 
-"ffmpeg-static@^5.0.2 || ^4.2.7 || ^3.0.0 || ^2.4.0", "ffmpeg-static@^5.1.0":
+"ffmpeg-static@^5.0.2 || ^4.2.7 || ^3.0.0 || ^2.4.0":
   "integrity" "sha512-eEWOiGdbf7HKPeJI5PoJ0oCwkL0hckL2JdS4JOuB/gUETppwkEpq8nF0+e6VEQnDCo/iuoipbTUsn9QJmtpNkg=="
   "resolved" "https://registry.npmjs.org/ffmpeg-static/-/ffmpeg-static-5.1.0.tgz"
   "version" "5.1.0"
