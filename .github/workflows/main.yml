@@ -5,7 +5,6 @@ on:
 
 jobs:
   build-bot:
-    needs: [test-bot, test-app]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
@@ -18,7 +17,6 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
   build-app:
-    needs: [test-bot, test-app]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
