@@ -4,9 +4,14 @@ export interface Playlist {
   videos: Video[];
 }
 
+export enum VideoStatus {
+  ACTIVE,
+  DELETED,
+}
+
 interface Video {
   name: string;
   url: string;
   id: string;
-  status: string;
+  status: VideoStatus;
 }

@@ -1,23 +1,27 @@
 import { List } from "@material-ui/core";
 import { Fragment } from "react";
-import { Video } from "../../api/playlist"
+import { Playlist } from "../../api/playlist";
 import VideoListItem from "./components/VideoListItem";
 
 type VideoListProps = {
-    videos: Video[]
-}
+  playlist: Playlist;
+};
 
 const VideoList = (props: VideoListProps) => {
-    const { videos } = props;
-    return (
-        <Fragment>
-            <List>
-                {videos.map((video) => (
-                    <VideoListItem key={video.id} video={video} />
-                ))}
-            </List>
-        </Fragment>
-    )
-}
+  const { playlist } = props;
+  return (
+    <Fragment>
+      <List>
+        {playlist.videos.map((video) => (
+          <VideoListItem
+            key={video.id}
+            video={video}
+            playlistId={playlist.id}
+          />
+        ))}
+      </List>
+    </Fragment>
+  );
+};
 
-export default VideoList
+export default VideoList;

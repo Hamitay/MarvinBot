@@ -12,12 +12,13 @@ import {
 } from "discord.js";
 import { buildDefaultEmbed } from "../../util/embedUtil";
 import SongService from "../../song/SongService";
-import { INTERACTION_SELECTOR } from "./PlaylistSelectInteraction";
+import { VideoStatus } from "../../playlist/Playlist";
 
 const shuffle = require("fisher-yates");
 
 const commandName = "menu";
 const commandDescription = "Displays the available playlists";
+const INTERACTION_SELECTOR = "playlistSelector";
 
 @injectable()
 export default class MenuCommand extends SlashCommand {
@@ -101,7 +102,11 @@ export class PlaylistSelectInteraction extends InteractionHandler<StringSelectMe
 
     const playlist = await this.#playlistService.getPlaylistByName(selected);
 
-    const videos = shuffle(playlist.videos);
+    let videos = playlist.videos.filter(
+      (video) => video.status !== VideoStatus.DELETED
+    );
+
+    videos = shuffle(videos);
 
     const videosNames = videos
       .map((video: any) => `- ${video.name}`)

@@ -73,7 +73,7 @@ const PlaylistDetail = () => {
               playlist={playlist}
               handleAddButtonClicked={enabledModal}
             />
-            <VideoList videos={playlist.videos} />
+            <VideoList playlist={playlist} />
           </PlaylistContentContainer>
         )}
       </PlaylistDetailContainer>

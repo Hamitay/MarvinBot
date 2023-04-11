@@ -1,18 +1,22 @@
 import {
   Avatar,
   Divider,
+  IconButton,
   Link,
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Tooltip,
   styled,
 } from "@material-ui/core";
-import { Fragment } from "react";
-import { Video } from "../../../api/playlist";
+import { Fragment, useState } from "react";
+import { Video, VideoStatus, updateVideoStatus } from "../../../api/playlist";
+import { Delete, Restore } from "@material-ui/icons";
 
 const MAX_NAME_SIZE = 30;
 
 type VideoListItemProps = {
+  playlistId: string;
   video: Video;
 };
 
@@ -23,10 +27,24 @@ const StyledAvatar = styled(Avatar)({
 });
 
 const VideoListItem = (props: VideoListItemProps) => {
-  const { video } = props;
+  const { playlistId, video } = props;
+  const [currentStatus, setCurrentStatus] = useState<VideoStatus>(
+    props.video.status
+  );
+
   const cutName = video.name.substring(0, MAX_NAME_SIZE);
   const url = video.url;
   const cutUrl = url.replace("https://www.", "");
+
+  const handleDeleteVideo = async () => {
+    await updateVideoStatus(playlistId, video.id, VideoStatus.DELETED);
+    setCurrentStatus(VideoStatus.DELETED);
+  };
+
+  const handleRestoreVideo = async () => {
+    await updateVideoStatus(playlistId, video.id, VideoStatus.ACTIVE);
+    setCurrentStatus(VideoStatus.ACTIVE);
+  };
 
   return (
     <Fragment>
@@ -42,6 +60,19 @@ const VideoListItem = (props: VideoListItemProps) => {
             </Link>
           }
         />
+        {currentStatus === VideoStatus.DELETED ? (
+          <Tooltip title="Restore video">
+            <IconButton onClick={handleRestoreVideo}>
+              <Restore></Restore>
+            </IconButton>
+          </Tooltip>
+        ) : (
+          <Tooltip title="Delete video">
+            <IconButton onClick={handleDeleteVideo}>
+              <Delete></Delete>
+            </IconButton>
+          </Tooltip>
+        )}
       </ListItem>
       <Divider />
     </Fragment>

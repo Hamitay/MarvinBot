@@ -39,6 +39,7 @@ export interface Video {
   url: string;
   thumbnailUrl: string;
   id: string;
+  status: VideoStatus;
 }
 export interface PlaylistRequest {
   name: string;
@@ -49,6 +50,11 @@ export interface AddVideoRequest {
   name: string;
   url: string;
   thumbnailUrl: string;
+}
+
+export enum VideoStatus {
+  ACTIVE,
+  DELETED,
 }
 
 const app = initializeApp(firebaseConfig);
@@ -74,7 +80,20 @@ const getAllPlaylists = async (): Promise<Playlist[]> => {
 const getPlaylistById = async (id: string): Promise<Playlist> => {
   const ref = doc(db, COLLECTION_NAME, id);
   const snap = await getDoc(ref);
-  return snap.data() as Playlist;
+  const playlistData = snap.data() as Playlist;
+
+  const activeVideos = playlistData.videos.filter(
+    (video) => video.status !== VideoStatus.DELETED
+  );
+  const deletedVideos = playlistData.videos.filter(
+    (video) => video.status === VideoStatus.DELETED
+  );
+
+  return {
+    ...playlistData,
+    videos: [...activeVideos, ...deletedVideos],
+    id,
+  };
 };
 
 const createPlaylist = async (payload: PlaylistRequest): Promise<void> => {
@@ -94,6 +113,7 @@ const addVideoToPlaylist = async (
 
   const newVideo = {
     ...payload,
+    status: VideoStatus.ACTIVE,
     id: v4(),
   };
 
@@ -102,6 +122,29 @@ const addVideoToPlaylist = async (
   });
 
   return newVideo;
+};
+
+export const updateVideoStatus = async (
+  playlistId: string,
+  videoId: string,
+  newStatus: VideoStatus
+): Promise<void> => {
+  const ref = doc(db, COLLECTION_NAME, playlistId);
+  const playlist = (await getDoc(ref)).data() as Playlist;
+  const newVideos = playlist.videos.map((video) => {
+    if (video.id === videoId) {
+      return {
+        ...video,
+        status: newStatus,
+      };
+    }
+
+    return video;
+  });
+
+  await updateDoc(ref, {
+    videos: newVideos,
+  });
 };
 
 export { getAllPlaylists, createPlaylist, getPlaylistById, addVideoToPlaylist };
