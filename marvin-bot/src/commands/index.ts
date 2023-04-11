@@ -5,7 +5,6 @@ import StopCommand from "./stop/StopCommand";
 import SkipCommand from "./skip/SkipCommand";
 import QueueCommand from "./queue/QueueCommand";
 import MenuCommand from "./menu/MenuCommand";
-import PlaylistCommand from "./playlist/PlaylistCommand";
 import { ButtonInteraction, StringSelectMenuInteraction } from "discord.js";
 
 @injectable()
